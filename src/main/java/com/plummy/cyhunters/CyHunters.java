@@ -1,5 +1,7 @@
 package com.plummy.cyhunters;
 
+import com.plummy.cyhunters.Assets.Game;
+import com.plummy.cyhunters.Assets.IGame;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
@@ -30,15 +32,15 @@ public final class CyHunters extends JavaPlugin {
         logger().info("CyHunters Disabled!");
     }
 
-    public CyHunters getInstance() {
+    public static CyHunters getInstance() {
         return instance;
     }
 
-    public IGame getMainGame() {
+    public static IGame getMainGame() {
         return mainGame;
     }
 
-    public Logger logger() {
+    public static Logger logger() {
         return logger;
     }
 }

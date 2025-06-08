@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 public final class CyHunters extends JavaPlugin {
     private static CyHunters instance;
+    private static IGame mainGame;
     private static Logger logger;
 
     {
@@ -15,6 +16,7 @@ public final class CyHunters extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        mainGame = new Game();
 
         logger().info("Enabling CyHunters...");
 
@@ -30,6 +32,10 @@ public final class CyHunters extends JavaPlugin {
 
     public CyHunters getInstance() {
         return instance;
+    }
+
+    public IGame getMainGame() {
+        return mainGame;
     }
 
     public Logger logger() {

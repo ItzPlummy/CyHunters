@@ -1,0 +1,6 @@
+name: CyHunters
+version: '${project.version}'
+main: com.plummy.cyhunters.CyHunters
+api-version: '1.21'
+
+author: Plummy

@@ -2,6 +2,8 @@ package com.plummy.cyhunters;
 
 import com.plummy.cyhunters.Assets.Game;
 import com.plummy.cyhunters.Assets.IGame;
+import com.plummy.cyhunters.Listeners.PlayerListener;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
@@ -22,6 +24,8 @@ public final class CyHunters extends JavaPlugin {
         mainGame.sync();
 
         logger().info("Enabling CyHunters...");
+
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
 
         logger().info("CyHunters Enabled!");
     }

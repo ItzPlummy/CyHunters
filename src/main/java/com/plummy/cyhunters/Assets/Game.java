@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
+import static com.plummy.cyhunters.CyHunters.getInstance;
+
 public class Game implements IGame {
     private GameState state;
 
@@ -76,23 +78,20 @@ public class Game implements IGame {
         }
 
         state = GameState.PREPARE;
+        send("Game has been started by " + startPlayer.getPlayer().getName() + ". Searching for a suitable location");
 
-        send("Game has been started by ");
+        Bukkit.getScheduler().runTaskAsynchronously(getInstance(), () -> {
+            Location location = locationFinder.findLocation(Bukkit.getWorlds().get(0));
 
-        Location location = locationFinder.findLocation(Bukkit.getWorlds().get(0));
+            Bukkit.getScheduler().runTask(getInstance(), () -> {
+                if (location == null) {
+                    send("Unable to find a suitable location to start the game. Please try again.");
+                    return;
+                }
 
-        if (location == null) {
-            send("Unable to find a suitable location to start the game. Please try again.");
-            return;
-        }
-
-        for (IGamePlayer gamePlayer : players.getPlayers()) {
-            if (gamePlayer.isSpectating()) {
-                continue;
-            }
-
-            gamePlayer.getPlayer().teleport(location);
-        }
+                players.ready(location);
+            });
+        });
     }
 
     @Override

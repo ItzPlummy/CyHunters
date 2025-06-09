@@ -13,8 +13,8 @@ import java.util.Random;
 
 public class LocationFinder implements ILocationFinder {
     private final static int searchRadius = 25000;
-    private final static int minDistance = 100;
-    private final static int maxDistance = 300;
+    private final static int minDistance = 50;
+    private final static int maxDistance = 200;
 
     private static final List<Structure> searchStructures = List.of(
             Structure.VILLAGE_PLAINS,
@@ -54,11 +54,11 @@ public class LocationFinder implements ILocationFinder {
 
                 Block block = world.getHighestBlockAt((int) (x + distance * Math.cos(angle)), (int) (z + distance * Math.sin(angle)));
 
-                if (permittedMaterials.contains(block.getType())) {
+                if (permittedMaterials.contains(block.getType()) || block.getY() < 64) {
                     continue;
                 }
 
-                return block.getLocation().add(0, 1, 0);
+                return block.getLocation().add(0.5, 1, 0.5);
             }
         }
 

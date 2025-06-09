@@ -1,5 +1,6 @@
 package com.plummy.cyhunters.Assets.Interfaces;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -19,4 +20,6 @@ public interface IPlayerManager {
     void leavePlayer(UUID uuid, boolean hasStarted);
 
     void syncPlayers(boolean hasStarted);
+
+    void ready(Location location);
 }

@@ -4,18 +4,26 @@ import com.plummy.cyhunters.Assets.Enums.GameState;
 import com.plummy.cyhunters.Assets.Enums.PlayerState;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.ScoreboardManager;
 
 import java.util.*;
 
 public class Game implements IGame {
     private GameState state;
+    private GameBoard gameBoard;
 
     private final Map<UUID, IGamePlayer> players;
 
     public Game() {
         state = GameState.NOT_STARTED;
+        gameBoard = new GameBoard();
 
         players = new HashMap<>();
+    }
+
+    @Override
+    public GameBoard getGameBoard() {
+        return gameBoard;
     }
 
     @Override
@@ -26,6 +34,11 @@ public class Game implements IGame {
     @Override
     public boolean hasPlayer(UUID uuid) {
         return players.containsKey(uuid);
+    }
+
+    @Override
+    public int getPlayerCount() {
+        return players.size();
     }
 
     @Override
@@ -61,6 +74,11 @@ public class Game implements IGame {
 
     @Override
     public void sync() {
+        syncPlayers();
+        syncGameboard();
+    }
+
+    private void syncPlayers() {
         List<Player> onlinePlayers = new ArrayList<>(Bukkit.getOnlinePlayers());
         List<UUID> onlineUUIDs = onlinePlayers.stream().map(Player::getUniqueId).toList();
 
@@ -79,5 +97,9 @@ public class Game implements IGame {
 
             this.joinPlayer(onlinePlayer);
         }
+    }
+
+    private void syncGameboard() {
+        gameBoard.updateBoard();
     }
 }

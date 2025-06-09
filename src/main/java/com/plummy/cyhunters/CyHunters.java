@@ -20,14 +20,23 @@ public final class CyHunters extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+
+        logger.info("Enabling CyHunters...");
+
+        logger.info("Creating and syncing game...");
         mainGame = new Game();
         mainGame.sync();
+        logger.info("Game synced!");
 
-        logger().info("Enabling CyHunters...");
-
+        logger.info("Registering listeners...");
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
+        logger.info("Listeners registered!");
 
-        logger().info("CyHunters Enabled!");
+        logger.info("CyHunters Enabled!");
+
+        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            mainGame.getGameBoard().updateBoard();
+        }, 0L, 10L);
     }
 
     @Override

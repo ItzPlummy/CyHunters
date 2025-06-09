@@ -7,11 +7,21 @@ import java.util.List;
 import java.util.UUID;
 
 public interface IPlayerManager {
-    List<IGamePlayer> getPlayers();
-
     IGamePlayer getPlayer(UUID uuid);
 
     boolean hasPlayer(UUID uuid);
+
+    List<IGamePlayer> getPlayers();
+
+    List<IGamePlayer> getActivePlayers();
+
+    List<IGamePlayer> getAlivePlayers();
+
+    IGamePlayer getSpeedrunner();
+
+    List<IGamePlayer> getHunters();
+
+    ICameraHolder getRandomCameraHolder();
 
     int size();
 
@@ -20,6 +30,8 @@ public interface IPlayerManager {
     void leavePlayer(UUID uuid, boolean hasStarted);
 
     void syncPlayers(boolean hasStarted);
+
+    void distributeRoles();
 
     void ready(Location location);
 }

@@ -13,11 +13,21 @@ public interface IGamePlayer {
 
     boolean isOnline();
 
+    boolean isAlive();
+
+    boolean isDead();
+
     Player getPlayer();
 
-    void updatePlayer(Player player);
+    ICamera getCamera();
 
-    void ready(Location location, Role role);
+    ICameraHolder getCameraHolder();
+
+    void setPlayer(Player player);
+
+    void ready(Location location);
 
     void reset();
+
+    void die();
 }

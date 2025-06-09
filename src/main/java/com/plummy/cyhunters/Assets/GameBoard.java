@@ -65,6 +65,6 @@ public class GameBoard implements IGameBoard {
     }
 
     private void setInGameBoard() {
-
+        board.add("Players: " + getMainGame().size());
     }
 }

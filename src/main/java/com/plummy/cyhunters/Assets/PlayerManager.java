@@ -2,6 +2,7 @@ package com.plummy.cyhunters.Assets;
 
 import com.plummy.cyhunters.Assets.Enums.PlayerState;
 import com.plummy.cyhunters.Assets.Enums.Role;
+import com.plummy.cyhunters.Assets.Interfaces.ICameraHolder;
 import com.plummy.cyhunters.Assets.Interfaces.IGamePlayer;
 import com.plummy.cyhunters.Assets.Interfaces.IPlayerManager;
 import org.bukkit.Bukkit;
@@ -12,14 +13,10 @@ import java.util.*;
 
 public class PlayerManager implements IPlayerManager {
     private final Map<UUID, IGamePlayer> players;
+    private IGamePlayer speedrunner = null;
 
     public PlayerManager() {
         players = new HashMap<>();
-    }
-
-    @Override
-    public List<IGamePlayer> getPlayers() {
-        return new ArrayList<>(players.values());
     }
 
     @Override
@@ -33,8 +30,38 @@ public class PlayerManager implements IPlayerManager {
     }
 
     @Override
+    public List<IGamePlayer> getPlayers() {
+        return new ArrayList<>(players.values());
+    }
+
+    @Override
+    public List<IGamePlayer> getActivePlayers() {
+        return getPlayers().stream().filter(gamePlayer -> !gamePlayer.isSpectating()).toList();
+    }
+
+    @Override
+    public List<IGamePlayer> getAlivePlayers() {
+        return getPlayers().stream().filter(gamePlayer -> !gamePlayer.isDead()).toList();
+    }
+
+    @Override
+    public IGamePlayer getSpeedrunner() {
+        return speedrunner;
+    }
+
+    @Override
+    public List<IGamePlayer> getHunters() {
+        return getPlayers().stream().filter(gamePlayer -> gamePlayer.getRole() == Role.HUNTER).toList();
+    }
+
+    @Override
+    public ICameraHolder getRandomCameraHolder() {
+        return getSpeedrunner().getCameraHolder();
+    }
+
+    @Override
     public int size() {
-        return players.size();
+        return getPlayers().stream().filter(gamePlayer -> !gamePlayer.isSpectating()).toList().size();
     }
 
     @Override
@@ -44,7 +71,7 @@ public class PlayerManager implements IPlayerManager {
         if (hasPlayer(uuid)) {
             IGamePlayer gamePlayer = players.get(uuid);
 
-            gamePlayer.updatePlayer(player);
+            gamePlayer.setPlayer(player);
             return;
         }
 
@@ -65,7 +92,7 @@ public class PlayerManager implements IPlayerManager {
             return;
         }
 
-        gamePlayer.updatePlayer(null);
+        gamePlayer.setPlayer(null);
     }
 
     @Override
@@ -90,32 +117,32 @@ public class PlayerManager implements IPlayerManager {
         }
     }
 
-    public void ready(Location location) {
-        int speedrunnerIndex = (int) (Math.random() * size());
+    @Override
+    public void distributeRoles() {
+        List<IGamePlayer> players = getActivePlayers();
 
-        int index = 0;
+        this.speedrunner = players.get((int) (Math.random() * size()));
+
+        for (IGamePlayer gamePlayer : players) {
+            gamePlayer.setRole(Role.HUNTER);
+        }
+
+        speedrunner.setRole(Role.SPEEDRUNNER);
+    }
+
+    @Override
+    public void ready(Location location) {
         double distance = 3;
         double angle = 0;
 
-        List<IGamePlayer> players = getPlayers();
-        Collections.shuffle(players);
+        for (IGamePlayer gamePlayer : getHunters()) {
+            double x = location.getX() + distance * Math.cos(angle);
+            double z = location.getZ() + distance * Math.sin(angle);
 
-        for (IGamePlayer gamePlayer : players) {
-            if (!gamePlayer.isOnline() || gamePlayer.isSpectating()) {
-                continue;
-            }
-
-            if (index == speedrunnerIndex) {
-                gamePlayer.ready(location, Role.SPEEDRUNNER);
-            } else {
-                double x = location.getX() + distance * Math.cos(angle);
-                double z = location.getZ() + distance * Math.sin(angle);
-
-                gamePlayer.ready(Objects.requireNonNull(location.getWorld()).getHighestBlockAt((int) x, (int) z).getLocation().add(0.5, 1, 0.5), Role.HUNTER);
-                angle += 2 * Math.PI / (size() - 1);
-            }
-
-            index++;
+            gamePlayer.ready(Objects.requireNonNull(location.getWorld()).getHighestBlockAt((int) x, (int) z).getLocation().add(0.5, 1, 0.5));
+            angle += 2 * Math.PI / (size() - 1);
         }
+
+        getSpeedrunner().ready(location);
     }
 }

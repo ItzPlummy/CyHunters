@@ -1,7 +1,9 @@
 package com.plummy.cyhunters.Assets.Interfaces;
 
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface IGame {
@@ -11,9 +13,15 @@ public interface IGame {
 
     boolean hasStarted();
 
+    boolean preparing();
+
+    List<IGamePlayer> getAlivePlayers();
+
     IGamePlayer getPlayer(UUID uuid);
 
     boolean hasPlayer(UUID uuid);
+
+    ICameraHolder getRandomCameraHolder();
 
     int size();
 
@@ -26,4 +34,8 @@ public interface IGame {
     void start(IGamePlayer startPlayer);
 
     void send(String message);
+
+    void title(String title, String subtitle, int in, int hold, int out);
+
+    void sound(Sound sound, float pitch);
 }

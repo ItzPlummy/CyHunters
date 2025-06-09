@@ -15,8 +15,6 @@ public interface IPlayerManager {
 
     List<IGamePlayer> getActivePlayers();
 
-    List<IGamePlayer> getAlivePlayers();
-
     IGamePlayer getSpeedrunner();
 
     List<IGamePlayer> getHunters();

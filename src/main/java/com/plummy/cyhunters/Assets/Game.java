@@ -72,8 +72,10 @@ public class Game implements IGame {
 
     @Override
     public void sync() {
-        playerManager.syncPlayers(hasStarted());
-        gameBoard.updateBoard();
+        Bukkit.getScheduler().runTaskLater(getInstance(), () -> {
+            playerManager.syncPlayers(hasStarted());
+            gameBoard.updateBoard();
+        }, 1L);
     }
 
     @Override

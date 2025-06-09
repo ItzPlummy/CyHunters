@@ -10,6 +10,8 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
+import static com.plummy.cyhunters.CyHunters.logger;
+
 public class PlayerManager implements IPlayerManager {
     private final Map<UUID, IGamePlayer> players;
     private IGamePlayer speedrunner = null;
@@ -36,11 +38,6 @@ public class PlayerManager implements IPlayerManager {
     @Override
     public List<IGamePlayer> getActivePlayers() {
         return getPlayers().stream().filter(gamePlayer -> !gamePlayer.isSpectating()).toList();
-    }
-
-    @Override
-    public List<IGamePlayer> getAlivePlayers() {
-        return getPlayers().stream().filter(gamePlayer -> !gamePlayer.isDead()).toList();
     }
 
     @Override
@@ -94,12 +91,12 @@ public class PlayerManager implements IPlayerManager {
         List<Player> onlinePlayers = new ArrayList<>(Bukkit.getOnlinePlayers());
         List<UUID> onlineUUIDs = onlinePlayers.stream().map(Player::getUniqueId).toList();
 
-        for (IGamePlayer gamePlayer : getPlayers()) {
-            if (onlineUUIDs.contains(gamePlayer.getPlayer().getUniqueId())) {
+        for (UUID uuid : players.keySet()) {
+            if (onlineUUIDs.contains(uuid)) {
                 continue;
             }
 
-            this.leavePlayer(gamePlayer.getPlayer().getUniqueId(), hasStarted);
+            this.leavePlayer(uuid, hasStarted);
         }
 
         for (Player onlinePlayer : onlinePlayers) {

@@ -10,4 +10,5 @@ public interface ICameraManager {
     void detachCamera(UUID uuid, UUID cameraUUID);
     void detachAllCameras(UUID uuid);
     void updateCameras(UUID uuid);
+    void rotateAllCameras();
 }

@@ -52,6 +52,10 @@ public final class CyHunters extends JavaPlugin {
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(instance, () -> {
             mainGame.getGameBoard().updateBoard();
         }, 0L, 10L);
+
+        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(instance, () -> {
+            mainGame.getCameraManager().rotateAllCameras();
+        }, 0L, 1L);
     }
 
     @Override

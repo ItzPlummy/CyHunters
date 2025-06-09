@@ -11,10 +11,11 @@ public class Camera implements ICamera {
     private final IGamePlayer player;
     private Location location = null;
 
-    private float yaw = 30;
+    private float yaw;
 
     public Camera(IGamePlayer player) {
         this.player = player;
+        this.yaw = 30;
     }
 
     @Override
@@ -24,6 +25,10 @@ public class Camera implements ICamera {
 
     @Override
     public void setLocation(Location location) {
+        if (player.isLeft() || !player.isDead()) {
+            return;
+        }
+
         this.location = location;
 
         updateLocation();
@@ -44,7 +49,12 @@ public class Camera implements ICamera {
     }
 
     @Override
-    public void addYaw(float add) {
-        yaw += add;
+    public void rotate(float degrees) {
+        if (player.isLeft() || !player.isDead()) {
+            return;
+        }
+
+        yaw += degrees;
+        updateLocation();
     }
 }

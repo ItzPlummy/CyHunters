@@ -8,5 +8,5 @@ public interface ICamera {
     UUID getUniqueID();
     void setLocation(Location location);
     void updateLocation();
-    void addYaw(float add);
+    void rotate(float degrees);
 }

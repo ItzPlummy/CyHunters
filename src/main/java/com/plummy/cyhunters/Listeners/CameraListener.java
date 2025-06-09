@@ -5,14 +5,18 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import static com.plummy.cyhunters.CyHunters.getMainGame;
+import static com.plummy.cyhunters.CyHunters.logger;
 
 public class CameraListener implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent e) {
+        if (!getMainGame().hasStarted()) {
+            return;
+        }
+
         IGamePlayer gamePlayer = getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId());
 
         if (gamePlayer.isAlive()) {
@@ -22,42 +26,23 @@ public class CameraListener implements Listener {
 
             getMainGame().getCameraManager().updateCameras(e.getPlayer().getUniqueId());
         } else if (gamePlayer.isDead()) {
-            gamePlayer.getCamera().updateLocation();
-        }
-    }
-
-    @EventHandler
-    public void onPlayerMoveSlot(PlayerItemHeldEvent e) {
-        IGamePlayer gamePlayer = getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId());
-
-        if (gamePlayer.isDead()) {
-            gamePlayer.getCamera().addYaw(getRotation(e.getPreviousSlot(), e.getNewSlot()) * 15);
+            e.setCancelled(true);
             gamePlayer.getCamera().updateLocation();
         }
     }
 
     @EventHandler
     public void onPlayerClick(PlayerInteractEvent e) {
-        if (e.getAction() != Action.PHYSICAL) {
+        logger().info("Player clicked!");
+
+        if (!getMainGame().hasStarted()) {
             return;
         }
 
         IGamePlayer gamePlayer = getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId());
 
         if (gamePlayer.isDead()) {
-            gamePlayer.switchSpectateTarget();
+            gamePlayer.getCameraSelector().attachCamera();
         }
-    }
-
-    private static int getRotation(int previous, int next) {
-        if (previous == 8 && next == 0) {
-            return 1;
-        }
-
-        if (previous == 0 && next == 8) {
-            return -1;
-        }
-
-        return previous < next ? 1 : -1;
     }
 }

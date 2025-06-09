@@ -1,6 +1,5 @@
 package com.plummy.cyhunters.Assets;
 
-import com.plummy.cyhunters.Assets.Enums.Role;
 import com.plummy.cyhunters.Assets.Interfaces.ICamera;
 import com.plummy.cyhunters.Assets.Interfaces.ICameraManager;
 import com.plummy.cyhunters.Assets.Interfaces.IGamePlayer;

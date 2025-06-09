@@ -5,6 +5,7 @@ import com.plummy.cyhunters.Assets.Enums.Role;
 import com.plummy.cyhunters.Assets.Interfaces.ICamera;
 import com.plummy.cyhunters.Assets.Interfaces.ICameraSelector;
 import com.plummy.cyhunters.Assets.Interfaces.IGamePlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -12,8 +13,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.Objects;
 
+import static com.plummy.cyhunters.CyHunters.getInstance;
 import static com.plummy.cyhunters.CyHunters.getMainGame;
 
 public class GamePlayer implements IGamePlayer {
@@ -129,9 +131,9 @@ public class GamePlayer implements IGamePlayer {
         }
 
         state = PlayerState.DEAD;
-        getPlayer().setGameMode(GameMode.SPECTATOR);
         getMainGame().getCameraManager().detachAllCameras(getPlayer().getUniqueId());
-
         cameraSelector.attachCamera();
+
+        Bukkit.getScheduler().runTaskLater(getInstance(), () -> getPlayer().setGameMode(GameMode.SPECTATOR), 1L);
     }
 }

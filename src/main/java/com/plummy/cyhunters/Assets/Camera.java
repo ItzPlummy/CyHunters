@@ -10,7 +10,6 @@ import java.util.UUID;
 public class Camera implements ICamera {
     private final IGamePlayer player;
     private Location location = null;
-    private Location calculatedLocation = null;
 
     private float yaw = 30;
 
@@ -21,11 +20,6 @@ public class Camera implements ICamera {
     @Override
     public UUID getUniqueID() {
         return player.getPlayer().getUniqueId();
-    }
-
-    @Override
-    public Location getLocation() {
-        return location;
     }
 
     @Override
@@ -41,7 +35,7 @@ public class Camera implements ICamera {
         float piPitch = 5 * (float) Math.PI / 180;
 
         Vector offset = new Vector(Math.sin(piYaw) * Math.cos(piPitch), Math.sin(piPitch), -Math.cos(piYaw) * Math.cos(piPitch));
-        calculatedLocation = this.location.clone().add(0, 0.5, 0).add(offset.multiply(2));
+        Location calculatedLocation = this.location.clone().add(0, 0.5, 0).add(offset.multiply(2));
 
         calculatedLocation.setYaw(yaw);
         calculatedLocation.setPitch(5);

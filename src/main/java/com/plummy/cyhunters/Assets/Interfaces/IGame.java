@@ -3,10 +3,11 @@ package com.plummy.cyhunters.Assets.Interfaces;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface IGame {
+    IPlayerManager getPlayerManager();
+
     IGameBoard getGameBoard();
 
     ILocationFinder getLocationFinder();
@@ -16,14 +17,6 @@ public interface IGame {
     boolean hasStarted();
 
     boolean preparing();
-
-    List<IGamePlayer> getAlivePlayers();
-
-    IGamePlayer getPlayer(UUID uuid);
-
-    boolean hasPlayer(UUID uuid);
-
-    int size();
 
     void joinPlayer(Player player);
 

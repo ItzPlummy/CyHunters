@@ -4,25 +4,24 @@ import com.plummy.cyhunters.Assets.Enums.Role;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-import java.util.UUID;
-
 public interface IGamePlayer {
+    ICamera getCamera();
+
+    ICameraSelector getCameraSelector();
+
     Role getRole();
 
     void setRole(Role role);
 
-    boolean isSpectating();
-
-    boolean isOnline();
+    boolean isLeft();
 
     boolean isAlive();
 
     boolean isDead();
 
-    Player getPlayer();
+    boolean isSpectating();
 
-    ICamera getCamera();
+    Player getPlayer();
 
     void setPlayer(Player player);
 
@@ -30,9 +29,5 @@ public interface IGamePlayer {
 
     void reset();
 
-    void die();
-
-    void setSpectateTargets(List<UUID> newTargets);
-
-    void switchSpectateTarget();
+    void die();;
 }

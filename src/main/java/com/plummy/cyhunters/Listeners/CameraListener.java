@@ -13,7 +13,7 @@ import static com.plummy.cyhunters.CyHunters.getMainGame;
 public class CameraListener implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent e) {
-        IGamePlayer gamePlayer = getMainGame().getPlayer(e.getPlayer().getUniqueId());
+        IGamePlayer gamePlayer = getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId());
 
         if (gamePlayer.isAlive()) {
             if (e.getTo() == null || (e.getFrom().getX() == e.getTo().getX() && e.getFrom().getY() == e.getTo().getY() && e.getFrom().getZ() == e.getTo().getZ())) {
@@ -28,7 +28,7 @@ public class CameraListener implements Listener {
 
     @EventHandler
     public void onPlayerMoveSlot(PlayerItemHeldEvent e) {
-        IGamePlayer gamePlayer = getMainGame().getPlayer(e.getPlayer().getUniqueId());
+        IGamePlayer gamePlayer = getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId());
 
         if (gamePlayer.isDead()) {
             gamePlayer.getCamera().addYaw(getRotation(e.getPreviousSlot(), e.getNewSlot()) * 15);
@@ -42,7 +42,7 @@ public class CameraListener implements Listener {
             return;
         }
 
-        IGamePlayer gamePlayer = getMainGame().getPlayer(e.getPlayer().getUniqueId());
+        IGamePlayer gamePlayer = getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId());
 
         if (gamePlayer.isDead()) {
             gamePlayer.switchSpectateTarget();

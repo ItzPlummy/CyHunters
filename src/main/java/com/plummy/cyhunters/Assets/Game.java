@@ -8,7 +8,6 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -17,7 +16,7 @@ import static com.plummy.cyhunters.CyHunters.getInstance;
 public class Game implements IGame {
     private GameState state;
 
-    private final IPlayerManager players;
+    private final IPlayerManager playerManager;
     private final IGameBoard gameBoard;
     private final ILocationFinder locationFinder;
     private final ICameraManager cameraManager;
@@ -25,10 +24,15 @@ public class Game implements IGame {
     public Game(IPlayerManager playerManager, IGameBoard gameBoard, ILocationFinder locationFinder, ICameraManager cameraManager) {
         this.state = GameState.NOT_STARTED;
 
-        this.players = playerManager;
+        this.playerManager = playerManager;
         this.gameBoard = gameBoard;
         this.locationFinder = locationFinder;
         this.cameraManager = cameraManager;
+    }
+
+    @Override
+    public IPlayerManager getPlayerManager() {
+        return playerManager;
     }
 
     @Override
@@ -42,6 +46,11 @@ public class Game implements IGame {
     }
 
     @Override
+    public ICameraManager getCameraManager() {
+        return cameraManager;
+    }
+
+    @Override
     public boolean hasStarted() {
         return state != GameState.NOT_STARTED;
     }
@@ -52,43 +61,18 @@ public class Game implements IGame {
     }
 
     @Override
-    public List<IGamePlayer> getAlivePlayers() {
-        return players.getAlivePlayers();
-    }
-
-    @Override
-    public IGamePlayer getPlayer(UUID uuid) {
-        return players.getPlayer(uuid);
-    }
-
-    @Override
-    public boolean hasPlayer(UUID uuid) {
-        return players.hasPlayer(uuid);
-    }
-
-    @Override
-    public ICameraManager getCameraManager() {
-        return cameraManager;
-    }
-
-    @Override
-    public int size() {
-        return players.size();
-    }
-
-    @Override
     public void joinPlayer(Player player) {
-        players.joinPlayer(player, hasStarted());
+        playerManager.joinPlayer(player, hasStarted());
     }
 
     @Override
     public void leavePlayer(UUID uuid) {
-        players.leavePlayer(uuid, hasStarted());
+        playerManager.leavePlayer(uuid, hasStarted());
     }
 
     @Override
     public void sync() {
-        players.syncPlayers(hasStarted());
+        playerManager.syncPlayers(hasStarted());
         gameBoard.updateBoard();
     }
 
@@ -110,15 +94,15 @@ public class Game implements IGame {
                     return;
                 }
 
-                players.distributeRoles();
-                players.ready(location);
+                playerManager.distributeRoles();
+                playerManager.ready(location);
 
                 Objects.requireNonNull(location.getWorld()).setGameRule(GameRule.KEEP_INVENTORY, false);
                 Objects.requireNonNull(location.getWorld()).setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
 
                 state = GameState.PREPARE;
                 sync();
-                cameraManager.setupPlayers(players.getActivePlayers());
+                cameraManager.setupPlayers(playerManager.getActivePlayers());
                 title("§b§lCy§d§lHunters", "§3Let the fun §5Begin§3!", 0, 40, 0);
                 sound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.843f);
 
@@ -126,7 +110,7 @@ public class Game implements IGame {
                         new java.util.TimerTask() {
                             @Override
                             public void run() {
-                                title("§b§l" + players.getSpeedrunner().getPlayer().getName(), "§5Speedrunner", 0, 40, 0);
+                                title("§b§l" + playerManager.getSpeedrunner().getPlayer().getName(), "§5Speedrunner", 0, 40, 0);
                                 sound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.949f);
                             }
                         },
@@ -152,21 +136,21 @@ public class Game implements IGame {
 
     @Override
     public void send(String message) {
-        for (IGamePlayer gamePlayer : players.getActivePlayers()) {
+        for (IGamePlayer gamePlayer : playerManager.getActivePlayers()) {
             gamePlayer.getPlayer().sendMessage(message);
         }
     }
 
     @Override
     public void title(String title, String subtitle, int in, int hold, int out) {
-        for (IGamePlayer gamePlayer : players.getActivePlayers()) {
+        for (IGamePlayer gamePlayer : playerManager.getActivePlayers()) {
             gamePlayer.getPlayer().sendTitle(title, subtitle, in, hold, out);
         }
     }
 
     @Override
     public void sound(Sound sound, float pitch) {
-        for (IGamePlayer gamePlayer : players.getActivePlayers()) {
+        for (IGamePlayer gamePlayer : playerManager.getActivePlayers()) {
             gamePlayer.getPlayer().playSound(gamePlayer.getPlayer(), sound, 1f, pitch);
         }
     }

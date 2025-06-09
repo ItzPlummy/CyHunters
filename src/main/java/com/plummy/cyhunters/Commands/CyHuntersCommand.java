@@ -25,7 +25,7 @@ public class CyHuntersCommand implements CommandExecutor {
 
         switch (args[0]) {
             case "start" -> {
-                getMainGame().start(getMainGame().getPlayer(player.getUniqueId()));
+                getMainGame().start(getMainGame().getPlayerManager().getPlayer(player.getUniqueId()));
             }
         }
 

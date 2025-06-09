@@ -20,24 +20,8 @@ public class CameraManager implements ICameraManager {
         for (IGamePlayer player : players) {
             addPlayer(player);
             detachAllCameras(player.getPlayer().getUniqueId());
-        }
 
-        for (IGamePlayer player : players) {
-            List<UUID> targetPlayers = new ArrayList<>();
-
-            for (IGamePlayer targetPlayer : players) {
-                if (targetPlayer.getRole() == Role.SPEEDRUNNER) {
-                    continue;
-                }
-
-                if (targetPlayer.getPlayer().getUniqueId().equals(player.getPlayer().getUniqueId())) {
-                    continue;
-                }
-
-                targetPlayers.add(targetPlayer.getPlayer().getUniqueId());
-            }
-
-            player.setSpectateTargets(targetPlayers);
+            player.getCameraSelector().setTargets(players.stream().map(p -> p.getPlayer().getUniqueId()).toList());
         }
     }
 

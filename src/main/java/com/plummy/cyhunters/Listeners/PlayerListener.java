@@ -47,7 +47,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        if (getMainGame().getPlayer(e.getPlayer().getUniqueId()).isSpectating()) {
+        if (getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId()).isSpectating()) {
             return;
         }
 
@@ -62,7 +62,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        IGamePlayer gamePlayer = getMainGame().getPlayer(e.getPlayer().getUniqueId());
+        IGamePlayer gamePlayer = getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId());
 
         if (gamePlayer.isSpectating()) {
             return;

@@ -3,6 +3,7 @@ package com.plummy.cyhunters.Assets;
 import com.plummy.cyhunters.Assets.Enums.PlayerState;
 import com.plummy.cyhunters.Assets.Enums.Role;
 import com.plummy.cyhunters.Assets.Interfaces.ICamera;
+import com.plummy.cyhunters.Assets.Interfaces.ICameraSelector;
 import com.plummy.cyhunters.Assets.Interfaces.IGamePlayer;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -21,8 +22,7 @@ public class GamePlayer implements IGamePlayer {
     private PlayerState state;
 
     private final ICamera camera;
-    private List<UUID> spectateTargets;
-    private int spectateTargetIndex = 0;
+    private final CameraSelector cameraSelector;
 
     public GamePlayer(Player player, PlayerState state) {
         this.player = player;
@@ -30,7 +30,17 @@ public class GamePlayer implements IGamePlayer {
         this.role = Role.UNDEFINED;
 
         this.camera = new Camera(this);
-        this.spectateTargets = null;
+        this.cameraSelector = new CameraSelector(this.camera);
+    }
+
+    @Override
+    public ICamera getCamera() {
+        return camera;
+    }
+
+    @Override
+    public ICameraSelector getCameraSelector() {
+        return cameraSelector;
     }
 
     @Override
@@ -44,13 +54,8 @@ public class GamePlayer implements IGamePlayer {
     }
 
     @Override
-    public boolean isSpectating() {
-        return state == PlayerState.SPECTATING;
-    }
-
-    @Override
-    public boolean isOnline() {
-        return player != null;
+    public boolean isLeft() {
+        return player == null;
     }
 
     @Override
@@ -64,13 +69,13 @@ public class GamePlayer implements IGamePlayer {
     }
 
     @Override
-    public Player getPlayer() {
-        return player;
+    public boolean isSpectating() {
+        return state == PlayerState.SPECTATING;
     }
 
     @Override
-    public ICamera getCamera() {
-        return camera;
+    public Player getPlayer() {
+        return player;
     }
 
     @Override
@@ -80,7 +85,7 @@ public class GamePlayer implements IGamePlayer {
 
     @Override
     public void ready(Location location) {
-        if (!isOnline() || isSpectating()) {
+        if (isLeft() || isSpectating()) {
             return;
         }
 
@@ -119,7 +124,7 @@ public class GamePlayer implements IGamePlayer {
 
     @Override
     public void die() {
-        if (!isOnline() || isSpectating() || isDead()) {
+        if (isLeft() || isSpectating() || isDead()) {
             return;
         }
 
@@ -127,19 +132,6 @@ public class GamePlayer implements IGamePlayer {
         getPlayer().setGameMode(GameMode.SPECTATOR);
         getMainGame().getCameraManager().detachAllCameras(getPlayer().getUniqueId());
 
-        getMainGame().getCameraManager().attachCamera(spectateTargets.get(spectateTargetIndex), camera);
-    }
-
-    @Override
-    public void setSpectateTargets(List<UUID> newTargets) {
-        this.spectateTargets = newTargets;
-        Collections.shuffle(spectateTargets);
-    }
-
-    @Override
-    public void switchSpectateTarget() {
-        getMainGame().getCameraManager().detachCamera(spectateTargets.get(spectateTargetIndex), camera.getUniqueID());
-        spectateTargetIndex = (spectateTargetIndex + 1) & spectateTargets.size();
-        getMainGame().getCameraManager().attachCamera(spectateTargets.get(spectateTargetIndex), camera);
+        cameraSelector.attachCamera();
     }
 }

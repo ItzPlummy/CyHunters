@@ -7,7 +7,11 @@ import java.util.UUID;
 public interface IGame {
     boolean hasStarted();
 
-    IGamePlayer newPlayer(Player player);
+    boolean hasPlayer(UUID uuid);
 
-    void removePlayer(UUID uuid);
+    void joinPlayer(Player player);
+
+    void leavePlayer(UUID uuid);
+
+    void sync();
 }

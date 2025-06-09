@@ -19,6 +19,7 @@ public final class CyHunters extends JavaPlugin {
     public void onEnable() {
         instance = this;
         mainGame = new Game();
+        mainGame.sync();
 
         logger().info("Enabling CyHunters...");
 

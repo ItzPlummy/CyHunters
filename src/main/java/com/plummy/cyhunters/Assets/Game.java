@@ -1,6 +1,8 @@
 package com.plummy.cyhunters.Assets;
 
 import com.plummy.cyhunters.Assets.Enums.GameState;
+import com.plummy.cyhunters.Assets.Enums.PlayerState;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -22,27 +24,60 @@ public class Game implements IGame {
     }
 
     @Override
-    public IGamePlayer newPlayer(Player player) {
-        UUID uuid = player.getUniqueId();
-
-        if (players.containsKey(uuid)) {
-            IGamePlayer gamePlayer = players.get(uuid);
-
-            gamePlayer.updatePlayer(player);
-            return gamePlayer;
-        }
-
-        IGamePlayer gamePlayer = new GamePlayer(player);
-        players.put(uuid, gamePlayer);
-        return gamePlayer;
+    public boolean hasPlayer(UUID uuid) {
+        return players.containsKey(uuid);
     }
 
     @Override
-    public void removePlayer(UUID uuid) {
-        if (!(players.containsKey(uuid))) {
+    public void joinPlayer(Player player) {
+        UUID uuid = player.getUniqueId();
+
+        if (hasPlayer(uuid)) {
+            IGamePlayer gamePlayer = players.get(uuid);
+
+            gamePlayer.updatePlayer(player);
             return;
         }
 
-        players.remove(uuid);
+        IGamePlayer gamePlayer = new GamePlayer(player, hasStarted() ? PlayerState.SPECTATING : PlayerState.PLAYING);
+        players.put(uuid, gamePlayer);
+    }
+
+    @Override
+    public void leavePlayer(UUID uuid) {
+        if (!hasPlayer(uuid)) {
+            return;
+        }
+
+        IGamePlayer gamePlayer = players.get(uuid);
+
+        if (gamePlayer.isSpectating()) {
+            players.remove(uuid);
+            return;
+        }
+
+        gamePlayer.updatePlayer(null);
+    }
+
+    @Override
+    public void sync() {
+        List<Player> onlinePlayers = new ArrayList<>(Bukkit.getOnlinePlayers());
+        List<UUID> onlineUUIDs = onlinePlayers.stream().map(Player::getUniqueId).toList();
+
+        for (IGamePlayer gamePlayer : players.values()) {
+            if (onlineUUIDs.contains(gamePlayer.getPlayer().getUniqueId())) {
+                continue;
+            }
+
+            this.leavePlayer(gamePlayer.getPlayer().getUniqueId());
+        }
+
+        for (Player onlinePlayer : onlinePlayers) {
+            if (hasPlayer(onlinePlayer.getUniqueId())) {
+                continue;
+            }
+
+            this.joinPlayer(onlinePlayer);
+        }
     }
 }

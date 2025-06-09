@@ -1,17 +1,14 @@
 package com.plummy.cyhunters;
 
-import com.plummy.cyhunters.Assets.Game;
-import com.plummy.cyhunters.Assets.GameBoard;
+import com.plummy.cyhunters.Assets.*;
 import com.plummy.cyhunters.Assets.Interfaces.IGame;
-import com.plummy.cyhunters.Assets.Interfaces.IGamePlayer;
-import com.plummy.cyhunters.Assets.LocationFinder;
-import com.plummy.cyhunters.Assets.PlayerManager;
 import com.plummy.cyhunters.Commands.CyHuntersCommand;
 import com.plummy.cyhunters.Commands.CyHuntersCompleter;
 import com.plummy.cyhunters.Listeners.CameraListener;
 import com.plummy.cyhunters.Listeners.PlayerListener;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.checkerframework.checker.units.qual.C;
 
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -35,7 +32,8 @@ public final class CyHunters extends JavaPlugin {
         mainGame = new Game(
                 new PlayerManager(),
                 new GameBoard(),
-                new LocationFinder()
+                new LocationFinder(),
+                new CameraManager()
         );
         mainGame.sync();
         logger.info("Game synced!");

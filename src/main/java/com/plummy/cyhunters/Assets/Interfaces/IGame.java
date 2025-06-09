@@ -11,6 +11,8 @@ public interface IGame {
 
     ILocationFinder getLocationFinder();
 
+    ICameraManager getCameraManager();
+
     boolean hasStarted();
 
     boolean preparing();
@@ -20,8 +22,6 @@ public interface IGame {
     IGamePlayer getPlayer(UUID uuid);
 
     boolean hasPlayer(UUID uuid);
-
-    ICameraHolder getRandomCameraHolder();
 
     int size();
 

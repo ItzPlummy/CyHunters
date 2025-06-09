@@ -2,7 +2,6 @@ package com.plummy.cyhunters.Assets;
 
 import com.plummy.cyhunters.Assets.Enums.PlayerState;
 import com.plummy.cyhunters.Assets.Enums.Role;
-import com.plummy.cyhunters.Assets.Interfaces.ICameraHolder;
 import com.plummy.cyhunters.Assets.Interfaces.IGamePlayer;
 import com.plummy.cyhunters.Assets.Interfaces.IPlayerManager;
 import org.bukkit.Bukkit;
@@ -52,11 +51,6 @@ public class PlayerManager implements IPlayerManager {
     @Override
     public List<IGamePlayer> getHunters() {
         return getPlayers().stream().filter(gamePlayer -> gamePlayer.getRole() == Role.HUNTER).toList();
-    }
-
-    @Override
-    public ICameraHolder getRandomCameraHolder() {
-        return getSpeedrunner().getCameraHolder();
     }
 
     @Override

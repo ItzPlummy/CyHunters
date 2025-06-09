@@ -21,8 +21,6 @@ public interface IPlayerManager {
 
     List<IGamePlayer> getHunters();
 
-    ICameraHolder getRandomCameraHolder();
-
     int size();
 
     void joinPlayer(Player player, boolean hasStarted);

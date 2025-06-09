@@ -3,6 +3,8 @@ package com.plummy.cyhunters.Listeners;
 import com.plummy.cyhunters.Assets.Interfaces.IGamePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -18,7 +20,7 @@ public class CameraListener implements Listener {
                 return;
             }
 
-            gamePlayer.getCameraHolder().updateCameras();
+            getMainGame().getCameraManager().updateCameras(e.getPlayer().getUniqueId());
         } else if (gamePlayer.isDead()) {
             gamePlayer.getCamera().updateLocation();
         }
@@ -31,6 +33,19 @@ public class CameraListener implements Listener {
         if (gamePlayer.isDead()) {
             gamePlayer.getCamera().addYaw(getRotation(e.getPreviousSlot(), e.getNewSlot()) * 15);
             gamePlayer.getCamera().updateLocation();
+        }
+    }
+
+    @EventHandler
+    public void onPlayerClick(PlayerInteractEvent e) {
+        if (e.getAction() != Action.PHYSICAL) {
+            return;
+        }
+
+        IGamePlayer gamePlayer = getMainGame().getPlayer(e.getPlayer().getUniqueId());
+
+        if (gamePlayer.isDead()) {
+            gamePlayer.switchSpectateTarget();
         }
     }
 

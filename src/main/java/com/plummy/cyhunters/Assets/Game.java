@@ -7,7 +7,6 @@ import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 
 import java.util.List;
 import java.util.Objects;
@@ -21,13 +20,15 @@ public class Game implements IGame {
     private final IPlayerManager players;
     private final IGameBoard gameBoard;
     private final ILocationFinder locationFinder;
+    private final ICameraManager cameraManager;
 
-    public Game(IPlayerManager playerManager, IGameBoard gameBoard, ILocationFinder locationFinder) {
+    public Game(IPlayerManager playerManager, IGameBoard gameBoard, ILocationFinder locationFinder, ICameraManager cameraManager) {
         this.state = GameState.NOT_STARTED;
 
         this.players = playerManager;
         this.gameBoard = gameBoard;
         this.locationFinder = locationFinder;
+        this.cameraManager = cameraManager;
     }
 
     @Override
@@ -66,8 +67,8 @@ public class Game implements IGame {
     }
 
     @Override
-    public ICameraHolder getRandomCameraHolder() {
-        return players.getRandomCameraHolder();
+    public ICameraManager getCameraManager() {
+        return cameraManager;
     }
 
     @Override
@@ -116,6 +117,8 @@ public class Game implements IGame {
                 Objects.requireNonNull(location.getWorld()).setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
 
                 state = GameState.PREPARE;
+                sync();
+                cameraManager.setupPlayers(players.getActivePlayers());
                 title("§b§lCy§d§lHunters", "§3Let the fun §5Begin§3!", 0, 40, 0);
                 sound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.843f);
 

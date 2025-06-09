@@ -1,11 +1,9 @@
 package com.plummy.cyhunters.Assets;
 
-import com.google.j2objc.annotations.ObjectiveCName;
 import com.plummy.cyhunters.Assets.Enums.PlayerState;
 import com.plummy.cyhunters.Assets.Enums.Role;
-import com.plummy.cyhunters.Assets.Interfaces.ICameraHolder;
-import com.plummy.cyhunters.Assets.Interfaces.IGamePlayer;
 import com.plummy.cyhunters.Assets.Interfaces.ICamera;
+import com.plummy.cyhunters.Assets.Interfaces.IGamePlayer;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -13,7 +11,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import java.util.Objects;
+import java.util.*;
 
 import static com.plummy.cyhunters.CyHunters.getMainGame;
 
@@ -23,7 +21,8 @@ public class GamePlayer implements IGamePlayer {
     private PlayerState state;
 
     private final ICamera camera;
-    private final ICameraHolder cameraHolder;
+    private List<UUID> spectateTargets;
+    private int spectateTargetIndex = 0;
 
     public GamePlayer(Player player, PlayerState state) {
         this.player = player;
@@ -31,7 +30,7 @@ public class GamePlayer implements IGamePlayer {
         this.role = Role.UNDEFINED;
 
         this.camera = new Camera(this);
-        this.cameraHolder = new CameraHolder(this);
+        this.spectateTargets = null;
     }
 
     @Override
@@ -72,11 +71,6 @@ public class GamePlayer implements IGamePlayer {
     @Override
     public ICamera getCamera() {
         return camera;
-    }
-
-    @Override
-    public ICameraHolder getCameraHolder() {
-        return cameraHolder;
     }
 
     @Override
@@ -131,10 +125,21 @@ public class GamePlayer implements IGamePlayer {
 
         state = PlayerState.DEAD;
         getPlayer().setGameMode(GameMode.SPECTATOR);
+        getMainGame().getCameraManager().detachAllCameras(getPlayer().getUniqueId());
 
-        ICameraHolder cameraHolder = getMainGame().getRandomCameraHolder();
+        getMainGame().getCameraManager().attachCamera(spectateTargets.get(spectateTargetIndex), camera);
+    }
 
-        cameraHolder.attachCamera(camera);
-        cameraHolder.updateCameras();
+    @Override
+    public void setSpectateTargets(List<UUID> newTargets) {
+        this.spectateTargets = newTargets;
+        Collections.shuffle(spectateTargets);
+    }
+
+    @Override
+    public void switchSpectateTarget() {
+        getMainGame().getCameraManager().detachCamera(spectateTargets.get(spectateTargetIndex), camera.getUniqueID());
+        spectateTargetIndex = (spectateTargetIndex + 1) & spectateTargets.size();
+        getMainGame().getCameraManager().attachCamera(spectateTargets.get(spectateTargetIndex), camera);
     }
 }

@@ -29,12 +29,12 @@ public final class CyHunters extends JavaPlugin {
         logger.info("Game synced!");
 
         logger.info("Registering listeners...");
-        Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(), instance);
         logger.info("Listeners registered!");
 
         logger.info("CyHunters Enabled!");
 
-        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
+        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(instance, () -> {
             mainGame.getGameBoard().updateBoard();
         }, 0L, 10L);
     }

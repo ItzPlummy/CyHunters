@@ -60,6 +60,7 @@ public class CameraSelector implements ICameraSelector {
         }
 
         getMainGame().getCameraManager().attachCamera(targets.get(spectateTargetIndex), camera);
+        getMainGame().getCameraManager().updateCameras(targets.get(spectateTargetIndex));
     }
 
     @Override

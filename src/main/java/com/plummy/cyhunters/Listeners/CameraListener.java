@@ -33,9 +33,11 @@ public class CameraListener implements Listener {
 
     @EventHandler
     public void onPlayerClick(PlayerInteractEvent e) {
-        logger().info("Player clicked!");
-
         if (!getMainGame().hasStarted()) {
+            return;
+        }
+
+        if (e.getAction() != Action.RIGHT_CLICK_AIR && e.getAction() != Action.LEFT_CLICK_AIR) {
             return;
         }
 

@@ -1,5 +1,6 @@
 package com.plummy.cyhunters.Assets.Enums;
 
 public enum GameState {
-    NOT_STARTED
+    NOT_STARTED,
+    PREPARE
 }

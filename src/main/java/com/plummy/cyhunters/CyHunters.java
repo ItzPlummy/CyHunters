@@ -1,11 +1,17 @@
 package com.plummy.cyhunters;
 
 import com.plummy.cyhunters.Assets.Game;
+import com.plummy.cyhunters.Assets.GameBoard;
 import com.plummy.cyhunters.Assets.Interfaces.IGame;
+import com.plummy.cyhunters.Assets.LocationFinder;
+import com.plummy.cyhunters.Assets.PlayerManager;
+import com.plummy.cyhunters.Commands.CyHuntersCommand;
+import com.plummy.cyhunters.Commands.CyHuntersCompleter;
 import com.plummy.cyhunters.Listeners.PlayerListener;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public final class CyHunters extends JavaPlugin {
@@ -24,9 +30,18 @@ public final class CyHunters extends JavaPlugin {
         logger.info("Enabling CyHunters...");
 
         logger.info("Creating and syncing game...");
-        mainGame = new Game();
+        mainGame = new Game(
+                new PlayerManager(),
+                new GameBoard(),
+                new LocationFinder()
+        );
         mainGame.sync();
         logger.info("Game synced!");
+
+        logger.info("Registering commands...");
+        Objects.requireNonNull(getCommand("cyhunters")).setExecutor(new CyHuntersCommand());
+        Objects.requireNonNull(getCommand("cyhunters")).setTabCompleter(new CyHuntersCompleter());
+        logger.info("Commands registered!");
 
         logger.info("Registering listeners...");
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), instance);

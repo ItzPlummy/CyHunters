@@ -1,4 +1,4 @@
-package com.plummy.cyhunters.Assets;
+package com.plummy.cyhunters.Assets.Interfaces;
 
 import org.bukkit.entity.Player;
 

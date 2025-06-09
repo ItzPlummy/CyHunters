@@ -1,5 +1,6 @@
-package com.plummy.cyhunters.Assets;
+package com.plummy.cyhunters.Assets.Interfaces;
 
+import com.plummy.cyhunters.Assets.GameBoard;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;

@@ -2,6 +2,8 @@ package com.plummy.cyhunters.Assets;
 
 import com.plummy.cyhunters.Assets.Enums.GameState;
 import com.plummy.cyhunters.Assets.Enums.PlayerState;
+import com.plummy.cyhunters.Assets.Interfaces.IGame;
+import com.plummy.cyhunters.Assets.Interfaces.IGamePlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

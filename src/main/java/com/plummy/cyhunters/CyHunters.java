@@ -1,7 +1,7 @@
 package com.plummy.cyhunters;
 
 import com.plummy.cyhunters.Assets.Game;
-import com.plummy.cyhunters.Assets.IGame;
+import com.plummy.cyhunters.Assets.Interfaces.IGame;
 import com.plummy.cyhunters.Listeners.PlayerListener;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;

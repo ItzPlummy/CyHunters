@@ -14,16 +14,19 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         getMainGame().joinPlayer(e.getPlayer());
+        getMainGame().sync();
     }
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
         getMainGame().leavePlayer(e.getPlayer().getUniqueId());
+        getMainGame().sync();
     }
 
     @EventHandler
     public void onPlayerKick(PlayerKickEvent e) {
         getMainGame().leavePlayer(e.getPlayer().getUniqueId());
+        getMainGame().sync();
     }
 
     @EventHandler

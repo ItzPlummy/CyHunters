@@ -4,13 +4,12 @@ import com.plummy.cyhunters.Assets.Enums.GameState;
 import com.plummy.cyhunters.Assets.Enums.PlayerState;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.ScoreboardManager;
 
 import java.util.*;
 
 public class Game implements IGame {
     private GameState state;
-    private GameBoard gameBoard;
+    private final GameBoard gameBoard;
 
     private final Map<UUID, IGamePlayer> players;
 
@@ -64,7 +63,7 @@ public class Game implements IGame {
 
         IGamePlayer gamePlayer = players.get(uuid);
 
-        if (gamePlayer.isSpectating()) {
+        if (!hasStarted() || gamePlayer.isSpectating()) {
             players.remove(uuid);
             return;
         }

@@ -40,7 +40,10 @@ public class GameBoard implements IGameBoard {
             return;
         }
 
-        scoreboard.resetScores(OBJECTIVE_NAME);
+        for (String entry : scoreboard.getEntries()) {
+            scoreboard.resetScores(entry);
+        }
+
         board.clear();
 
         if (getMainGame().hasStarted()) {

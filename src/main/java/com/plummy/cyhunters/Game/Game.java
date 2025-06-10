@@ -2,6 +2,7 @@ package com.plummy.cyhunters.Game;
 
 import com.plummy.cyhunters.Enums.GameState;
 import com.plummy.cyhunters.Iterfaces.*;
+import com.plummy.cyhunters.Player.Speedrunner;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
@@ -84,78 +85,64 @@ public class Game implements IGame {
         }
 
         state = GameState.LOCATING;
-        send("Game has been started by " + startPlayer.getPlayer().getName() + ". Searching for a suitable location");
+        send("§aGame has been started by " + startPlayer.getPlayer().getName() + ".");
+        send("§aSearching for a suitable location...");
 
         Bukkit.getScheduler().runTaskAsynchronously(getInstance(), () -> {
             Location location = locationFinder.findLocation(Bukkit.getWorlds().get(0));
 
             Bukkit.getScheduler().runTask(getInstance(), () -> {
                 if (location == null) {
-                    send("Unable to find a suitable location to start the game. Please try again.");
+                    send("§cUnable to find a suitable location to start the game. Please try again.");
                     return;
                 }
 
+                state = GameState.PREPARE;
+
                 List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
                 Collections.shuffle(players);
-
                 playerManager.setPlayers(players);
                 playerManager.ready(location);
+                sync();
 
                 Objects.requireNonNull(location.getWorld()).setGameRule(GameRule.KEEP_INVENTORY, false);
                 Objects.requireNonNull(location.getWorld()).setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
-
-                state = GameState.PREPARE;
-                sync();
                 cameraManager.setupPlayers(playerManager.getHunters());
-                title("§b§lCy§d§lHunters", "§3Let the fun §5Begin§3!", 0, 40, 0);
-                sound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.843f);
 
-                new java.util.Timer().schedule(
-                        new java.util.TimerTask() {
-                            @Override
-                            public void run() {
-                                title("§b§l" + playerManager.getSpeedrunner().getPlayer().getName(), "§5Speedrunner", 0, 40, 0);
-                                sound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.949f);
-                            }
-                        },
-                2000
-                );
+                for (IPlayer player : playerManager.getPlayers()) {
+                    player.getPlayer().sendTitle("§b§lCy§d§lHunters", "§3Let the fun §5Begin§3!", 0, 40, 0);
+                    player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.843f, 1f);
+                }
 
-                new java.util.Timer().schedule(
-                        new java.util.TimerTask() {
-                            @Override
-                            public void run() {
-                                state = GameState.HANDICAP;
+                Bukkit.getScheduler().runTaskLater(getInstance(), () -> {
+                    for (IPlayer player : playerManager.getPlayers()) {
+                        if (player instanceof Speedrunner) {
+                            player.getPlayer().sendTitle("§b§lYou", "§3Are a §5Speedrunner", 0, 40, 0);
+                        } else {
+                            player.getPlayer().sendTitle("§b§l" + playerManager.getSpeedrunner().getPlayer().getName(), "§3Is a §5Speedrunner", 0, 40, 0);
 
-                                title("§a§lS T A R T", "", 0, 10, 30);
-                                sound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f);
-                                sound(Sound.ENTITY_DRAGON_FIREBALL_EXPLODE, 1f);
-                            }
-                        },
-                4000
-                );
+                        }
+
+                        player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.843f, 1f);
+                    }
+                }, 40L);
+
+                Bukkit.getScheduler().runTaskLater(getInstance(), () -> {
+                    state = GameState.HANDICAP;
+
+                    for (IPlayer player : playerManager.getPlayers()) {
+                        player.getPlayer().sendTitle("§b§lLets §d§lGo!", "", 0, 40, 0);
+                        player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
+                        player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_DRAGON_FIREBALL_EXPLODE, 1f, 1f);
+                    }
+                }, 80L);
             });
         });
     }
 
-    @Override
     public void send(String message) {
         for (IPlayer gamePlayer : playerManager.getPlayers()) {
             gamePlayer.getPlayer().sendMessage(message);
-        }
-    }
-
-    @Override
-    public void title(String title, String subtitle, int in, int hold, int out) {
-        for (IPlayer gamePlayer : playerManager.getPlayers()) {
-            gamePlayer.getPlayer().sendTitle(title, subtitle, in, hold, out);
-        }
-    }
-
-    @Override
-    public void sound(Sound sound, float pitch) {
-        for (IPlayer gamePlayer : playerManager.getPlayers()) {
-            gamePlayer.getPlayer().playSound(gamePlayer.getPlayer(), sound, 1f, pitch);
         }
     }
 }

@@ -25,10 +25,4 @@ public interface IGame {
     void sync();
 
     void start(IPlayer startPlayer);
-
-    void send(String message);
-
-    void title(String title, String subtitle, int in, int hold, int out);
-
-    void sound(Sound sound, float pitch);
 }

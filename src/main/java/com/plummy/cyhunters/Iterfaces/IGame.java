@@ -1,5 +1,6 @@
 package com.plummy.cyhunters.Iterfaces;
 
+import com.plummy.cyhunters.Enums.GameEndingReason;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -25,4 +26,6 @@ public interface IGame {
     void sync();
 
     void start(IPlayer startPlayer);
+
+    void stop(GameEndingReason reason, IPlayer player);
 }

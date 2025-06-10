@@ -6,7 +6,6 @@ import com.plummy.cyhunters.Enums.PlayerState;
 import com.plummy.cyhunters.Iterfaces.ICamera;
 import com.plummy.cyhunters.Iterfaces.ICameraSelector;
 import com.plummy.cyhunters.Iterfaces.IHunter;
-import com.plummy.cyhunters.Iterfaces.IPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -47,7 +46,7 @@ public class Hunter extends AbstractPlayer implements IHunter {
 
     @Override
     public void setSpectating() {
-        if (isLeft() || isSpectating()) {
+        if (!isOnline() || isSpectating()) {
             return;
         }
 
@@ -65,7 +64,7 @@ public class Hunter extends AbstractPlayer implements IHunter {
 
     @Override
     public void ready(Location location) {
-        if (isLeft()) {
+        if (!isOnline()) {
             return;
         }
 

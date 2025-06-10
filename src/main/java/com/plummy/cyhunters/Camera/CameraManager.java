@@ -18,18 +18,24 @@ public class CameraManager implements ICameraManager {
 
     @Override
     public void setupPlayers(List<IHunter> players) {
+        resetPlayers();
+
         for (IHunter player : players) {
             addPlayer(player);
-            detachAllCameras(player.getPlayer().getUniqueId());
 
             List<UUID> targets = new ArrayList<>();
-
             for (IPlayer target : players) {
                 targets.add(target.getPlayer().getUniqueId());
             }
 
             player.getCameraSelector().setTargets(targets);
         }
+    }
+
+    @Override
+    public void resetPlayers() {
+        cameras.clear();
+        players.clear();
     }
 
     @Override

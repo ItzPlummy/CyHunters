@@ -11,5 +11,5 @@ public interface IPlayer {
 
     void setPlayer(Player player);
 
-    boolean isLeft();
+    boolean isOnline();
 }

@@ -1,5 +1,6 @@
 package com.plummy.cyhunters.Listeners;
 
+import com.plummy.cyhunters.Enums.GameEndingReason;
 import com.plummy.cyhunters.Player.Hunter;
 import com.plummy.cyhunters.Player.Spectator;
 import com.plummy.cyhunters.Player.Speedrunner;
@@ -83,9 +84,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        Bukkit.getScheduler().runTaskLater(getInstance(), () -> {
-
-        }, 20L);
+        Bukkit.getScheduler().runTaskLater(getInstance(), () -> getMainGame().stop(GameEndingReason.HUNTER_WINS, null), 20L);
     }
 
     @EventHandler

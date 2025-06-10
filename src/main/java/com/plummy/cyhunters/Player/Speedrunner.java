@@ -14,7 +14,7 @@ public class Speedrunner extends AbstractPlayer implements ISpeedrunner {
 
     @Override
     public void ready(Location location) {
-        if (isLeft()) {
+        if (!isOnline()) {
             return;
         }
 

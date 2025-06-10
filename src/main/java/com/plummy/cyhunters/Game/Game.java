@@ -110,13 +110,13 @@ public class Game implements IGame {
                 Objects.requireNonNull(location.getWorld()).setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
                 cameraManager.setupPlayers(playerManager.getHunters());
 
-                for (IPlayer player : playerManager.getPlayers()) {
+                for (IPlayer player : playerManager.getOnlinePlayers()) {
                     player.getPlayer().sendTitle("§b§lCy§d§lHunters", "§3Let the fun §5Begin§3!", 0, 40, 0);
                     player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.843f, 1f);
                 }
 
                 Bukkit.getScheduler().runTaskLater(getInstance(), () -> {
-                    for (IPlayer player : playerManager.getPlayers()) {
+                    for (IPlayer player : playerManager.getOnlinePlayers()) {
                         if (player instanceof Speedrunner) {
                             player.getPlayer().sendTitle("§b§lYou", "§3Are a §5Speedrunner", 0, 40, 0);
                         } else {
@@ -131,7 +131,7 @@ public class Game implements IGame {
                 Bukkit.getScheduler().runTaskLater(getInstance(), () -> {
                     state = GameState.HANDICAP;
 
-                    for (IPlayer player : playerManager.getPlayers()) {
+                    for (IPlayer player : playerManager.getOnlinePlayers()) {
                         player.getPlayer().sendTitle("§b§lLets §d§lGo!", "", 0, 40, 0);
                         player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
                         player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_DRAGON_FIREBALL_EXPLODE, 1f, 1f);
@@ -141,14 +141,43 @@ public class Game implements IGame {
         });
     }
 
-    public void stop(GameEndingReason reason, IPlayer player) {
+    public void stop(GameEndingReason reason, IPlayer stopPlayer) {
         if (!hasStarted()) {
             return;
+        }
+
+        state = GameState.NOT_STARTED;
+
+        String title = "";
+        String subtitle = "";
+
+        switch (reason) {
+            case SPEEDRUNNER_WINS -> {
+                title = "§c§lGame Over";
+                subtitle = "§c" + stopPlayer.getPlayer().getName() + " won!";
+            }
+            case HUNTER_WINS -> {
+                title = "§c§lGame Over";
+                subtitle = "§cHunters won!";
+            }
+            case COMMAND -> {
+                title = "§c§lGame Stopped";
+                subtitle = "§cBy " + stopPlayer.getPlayer().getName();
+            }
+        }
+
+        playerManager.resetPlayers();
+        cameraManager.resetPlayers();
+        sync();
+
+        for (IPlayer player : playerManager.getOnlinePlayers()) {
+            player.getPlayer().sendTitle(title, subtitle, 40, 40, 60);
+            player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_ENDER_DRAGON_DEATH, 1f, 1f);
         }
     }
 
     public void send(String message) {
-        for (IPlayer gamePlayer : playerManager.getPlayers()) {
+        for (IPlayer gamePlayer : playerManager.getOnlinePlayers()) {
             gamePlayer.getPlayer().sendMessage(message);
         }
     }

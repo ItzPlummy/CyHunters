@@ -34,8 +34,23 @@ public class PlayerManager implements IPlayerManager {
     }
 
     @Override
+    public List<IPlayer> getOnlinePlayers() {
+        return getPlayers().stream().filter(IPlayer::isOnline).toList();
+    }
+
+    @Override
+    public List<IPlayer> getActivePlayers() {
+        return getPlayers().stream().filter(player -> !(player instanceof Spectator)).toList();
+    }
+
+    @Override
     public List<IHunter> getHunters() {
         return getPlayers().stream().filter(player -> player instanceof IHunter).map(player -> (IHunter) player).toList();
+    }
+
+    @Override
+    public List<ISpectator> getSpectators() {
+        return getPlayers().stream().filter(player -> player instanceof ISpectator).map(player -> (ISpectator) player).toList();
     }
 
     @Override
@@ -60,6 +75,11 @@ public class PlayerManager implements IPlayerManager {
                 addHunter(player);
             }
         }
+    }
+
+    @Override
+    public void resetPlayers() {
+        this.players.clear();
     }
 
     @Override

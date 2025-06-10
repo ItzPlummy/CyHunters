@@ -36,7 +36,7 @@ public class CameraSelector implements ICameraSelector {
 
             IHunter target = (IHunter) getMainGame().getPlayerManager().getPlayer(targets.get(spectateTargetIndex));
 
-            if (target.isLeft()) {
+            if (!target.isOnline()) {
                 continue;
             }
             if (target.isSpectating()) {

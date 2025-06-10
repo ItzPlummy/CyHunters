@@ -27,7 +27,7 @@ public class Camera implements ICamera {
 
     @Override
     public void setLocation(Location location) {
-        if (player.isLeft() || !player.isSpectating()) {
+        if (!player.isOnline() || !player.isSpectating()) {
             return;
         }
 
@@ -52,7 +52,7 @@ public class Camera implements ICamera {
 
     @Override
     public void rotate(float degrees) {
-        if (player.isLeft() || !player.isSpectating()) {
+        if (!player.isOnline() || !player.isSpectating()) {
             return;
         }
 

@@ -13,13 +13,21 @@ public interface IPlayerManager {
 
     List<IPlayer> getPlayers();
 
+    List<IPlayer> getOnlinePlayers();
+
+    List<IPlayer> getActivePlayers();
+
     List<IHunter> getHunters();
+
+    List<ISpectator> getSpectators();
 
     ISpeedrunner getSpeedrunner();
 
     int size();
 
     void setPlayers(List<Player> players);
+
+    void resetPlayers();
 
     void joinPlayer(Player player);
 

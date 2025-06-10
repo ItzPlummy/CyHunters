@@ -36,7 +36,7 @@ public abstract class AbstractPlayer implements IPlayer {
     }
 
     @Override
-    public boolean isLeft() {
+    public boolean isOnline() {
         return player == null;
     }
 

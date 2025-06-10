@@ -1,6 +1,6 @@
 package com.plummy.cyhunters.Listeners;
 
-import com.plummy.cyhunters.Assets.Interfaces.IGamePlayer;
+import com.plummy.cyhunters.Iterfaces.IGamePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -8,7 +8,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import static com.plummy.cyhunters.CyHunters.getMainGame;
-import static com.plummy.cyhunters.CyHunters.logger;
 
 public class CameraListener implements Listener {
     @EventHandler

@@ -1,6 +1,6 @@
-package com.plummy.cyhunters.Assets;
+package com.plummy.cyhunters.Game;
 
-import com.plummy.cyhunters.Assets.Interfaces.IGameBoard;
+import com.plummy.cyhunters.Iterfaces.IGameBoard;
 import org.bukkit.Bukkit;
 import org.bukkit.scoreboard.*;
 

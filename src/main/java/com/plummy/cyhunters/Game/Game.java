@@ -1,7 +1,7 @@
-package com.plummy.cyhunters.Assets;
+package com.plummy.cyhunters.Game;
 
-import com.plummy.cyhunters.Assets.Enums.GameState;
-import com.plummy.cyhunters.Assets.Interfaces.*;
+import com.plummy.cyhunters.Enums.GameState;
+import com.plummy.cyhunters.Iterfaces.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.Location;

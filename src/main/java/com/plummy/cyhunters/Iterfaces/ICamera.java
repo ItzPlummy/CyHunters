@@ -1,4 +1,4 @@
-package com.plummy.cyhunters.Assets.Interfaces;
+package com.plummy.cyhunters.Iterfaces;
 
 import org.bukkit.Location;
 

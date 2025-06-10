@@ -1,6 +1,6 @@
 package com.plummy.cyhunters.Listeners;
 
-import com.plummy.cyhunters.Assets.Interfaces.IGamePlayer;
+import com.plummy.cyhunters.Iterfaces.IGamePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

@@ -1,6 +1,6 @@
-package com.plummy.cyhunters.Assets.Interfaces;
+package com.plummy.cyhunters.Iterfaces;
 
-import com.plummy.cyhunters.Assets.Enums.Role;
+import com.plummy.cyhunters.Enums.Role;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 

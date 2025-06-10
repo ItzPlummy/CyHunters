@@ -1,6 +1,6 @@
-package com.plummy.cyhunters.Assets;
+package com.plummy.cyhunters.Game;
 
-import com.plummy.cyhunters.Assets.Interfaces.ILocationFinder;
+import com.plummy.cyhunters.Iterfaces.ILocationFinder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;

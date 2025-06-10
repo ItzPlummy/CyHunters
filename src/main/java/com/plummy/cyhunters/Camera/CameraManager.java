@@ -1,8 +1,8 @@
-package com.plummy.cyhunters.Assets;
+package com.plummy.cyhunters.Camera;
 
-import com.plummy.cyhunters.Assets.Interfaces.ICamera;
-import com.plummy.cyhunters.Assets.Interfaces.ICameraManager;
-import com.plummy.cyhunters.Assets.Interfaces.IGamePlayer;
+import com.plummy.cyhunters.Iterfaces.ICamera;
+import com.plummy.cyhunters.Iterfaces.ICameraManager;
+import com.plummy.cyhunters.Iterfaces.IGamePlayer;
 
 import java.util.*;
 

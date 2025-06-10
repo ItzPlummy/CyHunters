@@ -1,4 +1,4 @@
-package com.plummy.cyhunters.Assets.Enums;
+package com.plummy.cyhunters.Enums;
 
 public enum GameState {
     NOT_STARTED,

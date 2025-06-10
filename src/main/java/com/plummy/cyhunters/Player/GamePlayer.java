@@ -1,10 +1,12 @@
-package com.plummy.cyhunters.Assets;
+package com.plummy.cyhunters.Player;
 
-import com.plummy.cyhunters.Assets.Enums.PlayerState;
-import com.plummy.cyhunters.Assets.Enums.Role;
-import com.plummy.cyhunters.Assets.Interfaces.ICamera;
-import com.plummy.cyhunters.Assets.Interfaces.ICameraSelector;
-import com.plummy.cyhunters.Assets.Interfaces.IGamePlayer;
+import com.plummy.cyhunters.Enums.PlayerState;
+import com.plummy.cyhunters.Enums.Role;
+import com.plummy.cyhunters.Iterfaces.ICamera;
+import com.plummy.cyhunters.Iterfaces.ICameraSelector;
+import com.plummy.cyhunters.Iterfaces.IGamePlayer;
+import com.plummy.cyhunters.Camera.Camera;
+import com.plummy.cyhunters.Camera.CameraSelector;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;

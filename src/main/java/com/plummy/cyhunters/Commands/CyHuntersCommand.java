@@ -1,5 +1,6 @@
 package com.plummy.cyhunters.Commands;
 
+import com.plummy.cyhunters.Enums.GameEndingReason;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -26,6 +27,9 @@ public class CyHuntersCommand implements CommandExecutor {
         switch (args[0]) {
             case "start" -> {
                 getMainGame().start(getMainGame().getPlayerManager().getPlayer(player.getUniqueId()));
+            }
+            case "stop" -> {
+                getMainGame().stop(GameEndingReason.COMMAND, getMainGame().getPlayerManager().getPlayer(player.getUniqueId()));
             }
         }
 

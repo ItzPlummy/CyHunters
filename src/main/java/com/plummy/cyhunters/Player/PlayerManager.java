@@ -1,6 +1,5 @@
 package com.plummy.cyhunters.Player;
 
-import com.plummy.cyhunters.Enums.PlayerState;
 import com.plummy.cyhunters.Iterfaces.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -71,6 +70,7 @@ public class PlayerManager implements IPlayerManager {
             getPlayer(uuid).setPlayer(player);
         } else {
             addSpectator(player);
+            ((ISpectator) getPlayer(uuid)).applySpectator();
         }
     }
 

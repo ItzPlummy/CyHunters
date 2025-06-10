@@ -1,13 +1,17 @@
 package com.plummy.cyhunters.Listeners;
 
-import com.plummy.cyhunters.Iterfaces.IPlayer;
+import com.plummy.cyhunters.Player.Hunter;
 import com.plummy.cyhunters.Player.Spectator;
+import com.plummy.cyhunters.Player.Speedrunner;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 
+import static com.plummy.cyhunters.CyHunters.getInstance;
 import static com.plummy.cyhunters.CyHunters.getMainGame;
 
 public class PlayerListener implements Listener {
@@ -70,17 +74,30 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
+    public void onPlayerDie(PlayerDeathEvent e) {
+        if (!getMainGame().hasStarted()) {
+            return;
+        }
+
+        if (!(getMainGame().getPlayerManager().getPlayer(e.getEntity().getUniqueId()) instanceof Speedrunner player)) {
+            return;
+        }
+
+        Bukkit.getScheduler().runTaskLater(getInstance(), () -> {
+
+        }, 20L);
+    }
+
+    @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent e) {
         if (!getMainGame().hasStarted()) {
             return;
         }
 
-        IPlayer gamePlayer = getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId());
-
-        if (gamePlayer.isSpectating()) {
+        if (!(getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId()) instanceof Hunter player)) {
             return;
         }
 
-        gamePlayer.die();
+        player.setSpectating();
     }
 }

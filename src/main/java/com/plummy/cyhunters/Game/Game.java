@@ -1,5 +1,6 @@
 package com.plummy.cyhunters.Game;
 
+import com.plummy.cyhunters.Enums.GameEndingReason;
 import com.plummy.cyhunters.Enums.GameState;
 import com.plummy.cyhunters.Iterfaces.*;
 import com.plummy.cyhunters.Player.Speedrunner;
@@ -138,6 +139,12 @@ public class Game implements IGame {
                 }, 80L);
             });
         });
+    }
+
+    public void stop(GameEndingReason reason, IPlayer player) {
+        if (!hasStarted()) {
+            return;
+        }
     }
 
     public void send(String message) {

@@ -7,27 +7,25 @@ import java.util.List;
 import java.util.UUID;
 
 public interface IPlayerManager {
-    IGamePlayer getPlayer(UUID uuid);
+    IPlayer getPlayer(UUID uuid);
 
     boolean hasPlayer(UUID uuid);
 
-    List<IGamePlayer> getPlayers();
+    List<IPlayer> getPlayers();
 
-    List<IGamePlayer> getActivePlayers();
+    List<IHunter> getHunters();
 
-    IGamePlayer getSpeedrunner();
-
-    List<IGamePlayer> getHunters();
+    ISpeedrunner getSpeedrunner();
 
     int size();
 
-    void joinPlayer(Player player, boolean hasStarted);
+    void setPlayers(List<Player> players);
 
-    void leavePlayer(UUID uuid, boolean hasStarted);
+    void joinPlayer(Player player);
+
+    void leavePlayer(UUID uuid);
 
     void syncPlayers(boolean hasStarted);
-
-    void distributeRoles();
 
     void ready(Location location);
 }

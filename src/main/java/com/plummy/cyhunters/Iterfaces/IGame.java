@@ -24,7 +24,7 @@ public interface IGame {
 
     void sync();
 
-    void start(IGamePlayer startPlayer);
+    void start(IPlayer startPlayer);
 
     void send(String message);
 

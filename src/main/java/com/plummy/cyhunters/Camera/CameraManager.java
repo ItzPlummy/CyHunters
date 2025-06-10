@@ -2,13 +2,14 @@ package com.plummy.cyhunters.Camera;
 
 import com.plummy.cyhunters.Iterfaces.ICamera;
 import com.plummy.cyhunters.Iterfaces.ICameraManager;
-import com.plummy.cyhunters.Iterfaces.IGamePlayer;
+import com.plummy.cyhunters.Iterfaces.IHunter;
+import com.plummy.cyhunters.Iterfaces.IPlayer;
 
 import java.util.*;
 
 public class CameraManager implements ICameraManager {
     private final Map<UUID, List<ICamera>> cameras;
-    private final Map<UUID, IGamePlayer> players;
+    private final Map<UUID, IHunter> players;
 
     public CameraManager() {
         this.cameras = new HashMap<>();
@@ -16,14 +17,14 @@ public class CameraManager implements ICameraManager {
     }
 
     @Override
-    public void setupPlayers(List<IGamePlayer> players) {
-        for (IGamePlayer player : players) {
+    public void setupPlayers(List<IHunter> players) {
+        for (IHunter player : players) {
             addPlayer(player);
             detachAllCameras(player.getPlayer().getUniqueId());
 
             List<UUID> targets = new ArrayList<>();
 
-            for (IGamePlayer target : players) {
+            for (IPlayer target : players) {
                 targets.add(target.getPlayer().getUniqueId());
             }
 
@@ -32,7 +33,7 @@ public class CameraManager implements ICameraManager {
     }
 
     @Override
-    public void addPlayer(IGamePlayer player) {
+    public void addPlayer(IHunter player) {
         cameras.putIfAbsent(player.getPlayer().getUniqueId(), new ArrayList<>());
         players.putIfAbsent(player.getPlayer().getUniqueId(), player);
     }
@@ -44,7 +45,7 @@ public class CameraManager implements ICameraManager {
 
     @Override
     public void detachCamera(UUID uuid, UUID cameraUUID) {
-        cameras.get(uuid).removeIf(camera -> camera.getUniqueID().equals(cameraUUID));
+        cameras.get(uuid).removeIf(camera -> camera.getUUID().equals(cameraUUID));
     }
 
     @Override

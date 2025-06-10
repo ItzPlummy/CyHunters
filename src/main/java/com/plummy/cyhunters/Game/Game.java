@@ -8,8 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 import static com.plummy.cyhunters.CyHunters.getInstance;
 
@@ -62,12 +61,12 @@ public class Game implements IGame {
 
     @Override
     public void joinPlayer(Player player) {
-        playerManager.joinPlayer(player, hasStarted());
+        playerManager.joinPlayer(player);
     }
 
     @Override
     public void leavePlayer(UUID uuid) {
-        playerManager.leavePlayer(uuid, hasStarted());
+        playerManager.leavePlayer(uuid);
     }
 
     @Override
@@ -79,7 +78,7 @@ public class Game implements IGame {
     }
 
     @Override
-    public void start(IGamePlayer startPlayer) {
+    public void start(IPlayer startPlayer) {
         if (hasStarted()) {
             return;
         }
@@ -96,7 +95,10 @@ public class Game implements IGame {
                     return;
                 }
 
-                playerManager.distributeRoles();
+                List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
+                Collections.shuffle(players);
+
+                playerManager.setPlayers(players);
                 playerManager.ready(location);
 
                 Objects.requireNonNull(location.getWorld()).setGameRule(GameRule.KEEP_INVENTORY, false);
@@ -104,7 +106,7 @@ public class Game implements IGame {
 
                 state = GameState.PREPARE;
                 sync();
-                cameraManager.setupPlayers(playerManager.getActivePlayers());
+                cameraManager.setupPlayers(playerManager.getHunters());
                 title("§b§lCy§d§lHunters", "§3Let the fun §5Begin§3!", 0, 40, 0);
                 sound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.843f);
 
@@ -138,21 +140,21 @@ public class Game implements IGame {
 
     @Override
     public void send(String message) {
-        for (IGamePlayer gamePlayer : playerManager.getActivePlayers()) {
+        for (IPlayer gamePlayer : playerManager.getPlayers()) {
             gamePlayer.getPlayer().sendMessage(message);
         }
     }
 
     @Override
     public void title(String title, String subtitle, int in, int hold, int out) {
-        for (IGamePlayer gamePlayer : playerManager.getActivePlayers()) {
+        for (IPlayer gamePlayer : playerManager.getPlayers()) {
             gamePlayer.getPlayer().sendTitle(title, subtitle, in, hold, out);
         }
     }
 
     @Override
     public void sound(Sound sound, float pitch) {
-        for (IGamePlayer gamePlayer : playerManager.getActivePlayers()) {
+        for (IPlayer gamePlayer : playerManager.getPlayers()) {
             gamePlayer.getPlayer().playSound(gamePlayer.getPlayer(), sound, 1f, pitch);
         }
     }

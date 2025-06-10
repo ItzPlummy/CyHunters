@@ -1,31 +1,33 @@
 package com.plummy.cyhunters.Camera;
 
 import com.plummy.cyhunters.Iterfaces.ICamera;
-import com.plummy.cyhunters.Iterfaces.IGamePlayer;
+import com.plummy.cyhunters.Iterfaces.IHunter;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
 import java.util.UUID;
 
 public class Camera implements ICamera {
-    private final IGamePlayer player;
-    private Location location = null;
+    private final IHunter player;
+    private Location location;
 
     private float yaw;
 
-    public Camera(IGamePlayer player) {
+    public Camera(IHunter player) {
         this.player = player;
+        this.location = null;
+
         this.yaw = 30;
     }
 
     @Override
-    public UUID getUniqueID() {
+    public UUID getUUID() {
         return player.getPlayer().getUniqueId();
     }
 
     @Override
     public void setLocation(Location location) {
-        if (player.isLeft() || !player.isDead()) {
+        if (player.isLeft() || !player.isSpectating()) {
             return;
         }
 
@@ -50,7 +52,7 @@ public class Camera implements ICamera {
 
     @Override
     public void rotate(float degrees) {
-        if (player.isLeft() || !player.isDead()) {
+        if (player.isLeft() || !player.isSpectating()) {
             return;
         }
 

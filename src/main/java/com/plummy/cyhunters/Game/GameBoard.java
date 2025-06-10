@@ -61,7 +61,7 @@ public class GameBoard implements IGameBoard {
     }
 
     private void setPreGameBoard() {
-        board.add("Players: " + getMainGame().getPlayerManager().size());
+        board.add("Players: " + Bukkit.getOnlinePlayers().size());
     }
 
     private void setInGameBoard() {

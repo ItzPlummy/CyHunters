@@ -1,9 +1,8 @@
 package com.plummy.cyhunters.Camera;
 
-import com.plummy.cyhunters.Enums.Role;
 import com.plummy.cyhunters.Iterfaces.ICamera;
 import com.plummy.cyhunters.Iterfaces.ICameraSelector;
-import com.plummy.cyhunters.Iterfaces.IGamePlayer;
+import com.plummy.cyhunters.Iterfaces.IHunter;
 
 import java.util.Collections;
 import java.util.List;
@@ -35,7 +34,7 @@ public class CameraSelector implements ICameraSelector {
         do {
             spectateTargetIndex = (spectateTargetIndex + 1) % targets.size();
 
-            IGamePlayer target = getMainGame().getPlayerManager().getPlayer(targets.get(spectateTargetIndex));
+            IHunter target = (IHunter) getMainGame().getPlayerManager().getPlayer(targets.get(spectateTargetIndex));
 
             if (target.isLeft()) {
                 continue;
@@ -43,17 +42,11 @@ public class CameraSelector implements ICameraSelector {
             if (target.isSpectating()) {
                 continue;
             }
-            if (target.isDead()) {
-                continue;
-            }
-            if (target.getRole() == Role.SPEEDRUNNER) {
-                continue;
-            }
 
             break;
         } while (spectateTargetIndex != prevTargetIndex);
 
-        getMainGame().getCameraManager().detachCamera(targets.get(prevTargetIndex), camera.getUniqueID());
+        getMainGame().getCameraManager().detachCamera(targets.get(prevTargetIndex), camera.getUUID());
 
         if (spectateTargetIndex == prevTargetIndex) {
             return;
@@ -65,6 +58,6 @@ public class CameraSelector implements ICameraSelector {
 
     @Override
     public void detachCamera() {
-        getMainGame().getCameraManager().detachCamera(targets.get(spectateTargetIndex), camera.getUniqueID());
+        getMainGame().getCameraManager().detachCamera(targets.get(spectateTargetIndex), camera.getUUID());
     }
 }

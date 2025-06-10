@@ -5,7 +5,7 @@ import org.bukkit.Location;
 import java.util.UUID;
 
 public interface ICamera {
-    UUID getUniqueID();
+    UUID getUUID();
     void setLocation(Location location);
     void updateLocation();
     void rotate(float degrees);

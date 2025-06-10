@@ -1,9 +1,7 @@
 package com.plummy.cyhunters.Player;
 
 import com.plummy.cyhunters.Enums.PlayerState;
-import com.plummy.cyhunters.Enums.Role;
-import com.plummy.cyhunters.Iterfaces.IGamePlayer;
-import com.plummy.cyhunters.Iterfaces.IPlayerManager;
+import com.plummy.cyhunters.Iterfaces.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -11,15 +9,18 @@ import org.bukkit.entity.Player;
 import java.util.*;
 
 public class PlayerManager implements IPlayerManager {
-    private final Map<UUID, IGamePlayer> players;
-    private IGamePlayer speedrunner = null;
+    private final Map<UUID, IPlayer> players;
+
+    private UUID speedrunnerUUID;
 
     public PlayerManager() {
         players = new HashMap<>();
+
+        speedrunnerUUID = null;
     }
 
     @Override
-    public IGamePlayer getPlayer(UUID uuid) {
+    public IPlayer getPlayer(UUID uuid) {
         return players.get(uuid);
     }
 
@@ -29,59 +30,63 @@ public class PlayerManager implements IPlayerManager {
     }
 
     @Override
-    public List<IGamePlayer> getPlayers() {
+    public List<IPlayer> getPlayers() {
         return new ArrayList<>(players.values());
     }
 
     @Override
-    public List<IGamePlayer> getActivePlayers() {
-        return getPlayers().stream().filter(gamePlayer -> !gamePlayer.isSpectating()).toList();
+    public List<IHunter> getHunters() {
+        return getPlayers().stream().filter(player -> player instanceof IHunter).map(player -> (IHunter) player).toList();
     }
 
     @Override
-    public IGamePlayer getSpeedrunner() {
-        return speedrunner;
-    }
-
-    @Override
-    public List<IGamePlayer> getHunters() {
-        return getPlayers().stream().filter(gamePlayer -> gamePlayer.getRole() == Role.HUNTER).toList();
+    public ISpeedrunner getSpeedrunner() {
+        return getPlayer(speedrunnerUUID) instanceof ISpeedrunner ? (ISpeedrunner) getPlayer(speedrunnerUUID) : null;
     }
 
     @Override
     public int size() {
-        return getPlayers().stream().filter(gamePlayer -> !gamePlayer.isSpectating()).toList().size();
+        return getPlayers().size();
     }
 
     @Override
-    public void joinPlayer(Player player, boolean hasStarted) {
+    public void setPlayers(List<Player> players) {
+        this.players.clear();
+        speedrunnerUUID = players.get((int) (Math.random() * players.size())).getUniqueId();
+
+        for (Player player : players) {
+            if (player.getUniqueId().equals(speedrunnerUUID)) {
+                addSpeedrunner(player);
+            } else {
+                addHunter(player);
+            }
+        }
+    }
+
+    @Override
+    public void joinPlayer(Player player) {
         UUID uuid = player.getUniqueId();
 
         if (hasPlayer(uuid)) {
-            IGamePlayer gamePlayer = players.get(uuid);
-
-            gamePlayer.setPlayer(player);
-            return;
+            getPlayer(uuid).setPlayer(player);
+        } else {
+            addSpectator(player);
         }
-
-        IGamePlayer gamePlayer = new GamePlayer(player, hasStarted ? PlayerState.SPECTATING : PlayerState.PLAYING);
-        players.put(uuid, gamePlayer);
     }
 
     @Override
-    public void leavePlayer(UUID uuid, boolean hasStarted) {
+    public void leavePlayer(UUID uuid) {
         if (!hasPlayer(uuid)) {
             return;
         }
 
-        IGamePlayer gamePlayer = players.get(uuid);
+        IPlayer player = getPlayer(uuid);
 
-        if (!hasStarted || gamePlayer.isSpectating()) {
-            players.remove(uuid);
-            return;
+        if (player instanceof ISpectator) {
+            removePlayer(uuid);
+        } else {
+            player.setPlayer(null);
         }
-
-        gamePlayer.setPlayer(null);
     }
 
     @Override
@@ -94,7 +99,7 @@ public class PlayerManager implements IPlayerManager {
                 continue;
             }
 
-            this.leavePlayer(uuid, hasStarted);
+            this.leavePlayer(uuid);
         }
 
         for (Player onlinePlayer : onlinePlayers) {
@@ -102,21 +107,8 @@ public class PlayerManager implements IPlayerManager {
                 continue;
             }
 
-            this.joinPlayer(onlinePlayer, hasStarted);
+            this.joinPlayer(onlinePlayer);
         }
-    }
-
-    @Override
-    public void distributeRoles() {
-        List<IGamePlayer> players = getActivePlayers();
-
-        this.speedrunner = players.get((int) (Math.random() * size()));
-
-        for (IGamePlayer gamePlayer : players) {
-            gamePlayer.setRole(Role.HUNTER);
-        }
-
-        speedrunner.setRole(Role.SPEEDRUNNER);
     }
 
     @Override
@@ -124,14 +116,30 @@ public class PlayerManager implements IPlayerManager {
         double distance = 3;
         double angle = 0;
 
-        for (IGamePlayer gamePlayer : getHunters()) {
+        for (IHunter hunter : getHunters()) {
             double x = location.getX() + distance * Math.cos(angle);
             double z = location.getZ() + distance * Math.sin(angle);
 
-            gamePlayer.ready(Objects.requireNonNull(location.getWorld()).getHighestBlockAt((int) x, (int) z).getLocation().add(0.5, 1, 0.5));
+            hunter.ready(Objects.requireNonNull(location.getWorld()).getHighestBlockAt((int) x, (int) z).getLocation().add(0.5, 1, 0.5));
             angle += 2 * Math.PI / (size() - 1);
         }
 
         getSpeedrunner().ready(location);
+    }
+
+    private void addSpeedrunner(Player player) {
+        this.players.put(player.getUniqueId(), new Speedrunner(player.getUniqueId(), player));
+    }
+
+    private void addHunter(Player player) {
+        this.players.put(player.getUniqueId(), new Hunter(player.getUniqueId(), player));
+    }
+
+    private void addSpectator(Player player) {
+        this.players.put(player.getUniqueId(), new Spectator(player.getUniqueId(), player));
+    }
+
+    private void removePlayer(UUID uuid) {
+        this.players.remove(uuid);
     }
 }

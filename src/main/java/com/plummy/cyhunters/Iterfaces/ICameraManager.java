@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ICameraManager {
-    void setupPlayers(List<IGamePlayer> players);
-    void addPlayer(IGamePlayer player);
+    void setupPlayers(List<IHunter> players);
+    void addPlayer(IHunter player);
     void attachCamera(UUID uuid, ICamera camera);
     void detachCamera(UUID uuid, UUID cameraUUID);
     void detachAllCameras(UUID uuid);

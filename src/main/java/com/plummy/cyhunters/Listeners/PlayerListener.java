@@ -1,6 +1,7 @@
 package com.plummy.cyhunters.Listeners;
 
-import com.plummy.cyhunters.Iterfaces.IGamePlayer;
+import com.plummy.cyhunters.Iterfaces.IPlayer;
+import com.plummy.cyhunters.Player.Spectator;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,18 +13,30 @@ import static com.plummy.cyhunters.CyHunters.getMainGame;
 public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
+        if (!getMainGame().hasStarted()) {
+            return;
+        }
+
         getMainGame().joinPlayer(e.getPlayer());
         getMainGame().sync();
     }
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
+        if (!getMainGame().hasStarted()) {
+            return;
+        }
+
         getMainGame().leavePlayer(e.getPlayer().getUniqueId());
         getMainGame().sync();
     }
 
     @EventHandler
     public void onPlayerKick(PlayerKickEvent e) {
+        if (!getMainGame().hasStarted()) {
+            return;
+        }
+
         getMainGame().leavePlayer(e.getPlayer().getUniqueId());
         getMainGame().sync();
     }
@@ -47,7 +60,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        if (getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId()).isSpectating()) {
+        if (getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId()) instanceof Spectator) {
             return;
         }
 
@@ -62,7 +75,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        IGamePlayer gamePlayer = getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId());
+        IPlayer gamePlayer = getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId());
 
         if (gamePlayer.isSpectating()) {
             return;

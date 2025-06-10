@@ -1,6 +1,6 @@
 package com.plummy.cyhunters.Listeners;
 
-import com.plummy.cyhunters.Iterfaces.IGamePlayer;
+import com.plummy.cyhunters.Player.Hunter;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -16,17 +16,21 @@ public class CameraListener implements Listener {
             return;
         }
 
-        IGamePlayer gamePlayer = getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId());
+        if (!(getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId()) instanceof Hunter player)) {
+            return;
+        }
 
-        if (gamePlayer.isAlive()) {
+        if (player.isSpectating()) {
+            e.setCancelled(true);
+            player.getCamera().updateLocation();
+
+
+        } else {
             if (e.getTo() == null || (e.getFrom().getX() == e.getTo().getX() && e.getFrom().getY() == e.getTo().getY() && e.getFrom().getZ() == e.getTo().getZ())) {
                 return;
             }
 
-            getMainGame().getCameraManager().updateCameras(e.getPlayer().getUniqueId());
-        } else if (gamePlayer.isDead()) {
-            e.setCancelled(true);
-            gamePlayer.getCamera().updateLocation();
+            getMainGame().getCameraManager().updateCameras(player.getUUID());
         }
     }
 
@@ -40,10 +44,12 @@ public class CameraListener implements Listener {
             return;
         }
 
-        IGamePlayer gamePlayer = getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId());
+        if (!(getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId()) instanceof Hunter player)) {
+            return;
+        }
 
-        if (gamePlayer.isDead()) {
-            gamePlayer.getCameraSelector().attachCamera();
+        if (player.isSpectating()) {
+            player.getCameraSelector().attachCamera();
         }
     }
 }

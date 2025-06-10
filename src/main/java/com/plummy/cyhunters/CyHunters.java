@@ -31,6 +31,17 @@ public final class CyHunters extends JavaPlugin {
 
         logger.info("Enabling CyHunters...");
 
+        if (!getDataFolder().exists()) {
+            logger().info("Creating plugin folder...");
+            if (getDataFolder().mkdir()) {
+               logger().info("Plugin folder created successfully!");
+            } else {
+                logger.warning("Plugin folder was not created, which may cause issues.");
+            }
+        }
+        saveDefaultConfig();
+        reloadConfig();
+
         logger.info("Creating and syncing game...");
         mainGame = new Game(
                 new PlayerManager(),

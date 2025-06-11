@@ -19,7 +19,7 @@ public enum GameDimension {
     }
 
     public static GameDimension getFromConfig() {
-        String dimension = Objects.requireNonNull(getInstance().getConfig().getString("settings.style"));
+        String dimension = Objects.requireNonNull(getInstance().getConfig().getString("settings.dimension"));
 
         if (dimension.equals("nether")) {
             return NETHER;

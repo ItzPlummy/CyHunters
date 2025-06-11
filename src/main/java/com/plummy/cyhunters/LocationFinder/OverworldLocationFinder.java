@@ -18,7 +18,6 @@ public class OverworldLocationFinder implements ILocationFinder {
             Structure.VILLAGE_PLAINS,
             Structure.VILLAGE_DESERT,
             Structure.VILLAGE_SAVANNA,
-            Structure.SHIPWRECK_BEACHED,
             Structure.DESERT_PYRAMID
     );
 

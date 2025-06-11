@@ -14,8 +14,39 @@ public class CyHuntersCompleter implements TabCompleter {
             return List.of(
                     "start",
                     "stop",
+                    "settings",
                     "help"
             );
+        }
+
+        if (args.length == 2 && args[0].equalsIgnoreCase("settings")) {
+            return List.of(
+                    "dimension",
+                    "style",
+                    "kit"
+            );
+        }
+
+        if (args.length == 3 && args[0].equalsIgnoreCase("settings")) {
+            return switch (args[1]) {
+                case "dimension" -> List.of(
+                        "overworld",
+                        "nether"
+                );
+                case "style" -> List.of(
+                        "normal",
+                        "blitz"
+                );
+                case "kit" -> List.of(
+                        "empty",
+                        "basic",
+                        "bow",
+                        "shears",
+                        "op",
+                        "mace"
+                );
+                default -> null;
+            };
         }
 
         return null;

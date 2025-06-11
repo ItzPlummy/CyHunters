@@ -5,12 +5,22 @@ import java.util.Objects;
 import static com.plummy.cyhunters.CyHunters.getInstance;
 
 public enum KitType {
-    EMPTY,
-    BASIC,
-    BOW,
-    SHEARS,
-    OP,
-    MACE;
+    EMPTY("Empty"),
+    BASIC("Basic"),
+    BOW("Bow"),
+    SHEARS("Shears"),
+    OP("OP"),
+    MACE("Mace");
+
+    private final String name;
+
+    KitType(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return this.name;
+    }
 
     public static KitType getFromConfig() {
         String kit = Objects.requireNonNull(getInstance().getConfig().getString("settings.kit"));

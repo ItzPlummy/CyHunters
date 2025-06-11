@@ -1,7 +1,7 @@
 # CyHunters 1.0 Config File
 
 settings:
-  # Game dimension - [ overworld, the_nether ]
+  # Game dimension - [ overworld, nether ]
   dimension: overworld
   # Game style - [ normal, blitz ]
   style: normal

@@ -30,14 +30,16 @@ public class GameFactory implements IGameFactory {
                     new GameScheduler(),
                     new GameBoard(),
                     locationFinderFactory.createLocationFinder(dimension),
-                    new CameraManager()
+                    new CameraManager(),
+                    kitCreatorFactory.createKitCreator(type)
             );
             case BLITZ -> new BlitzGame(
                     new PlayerManager(),
                     new GameScheduler(),
                     new GameBoard(),
                     locationFinderFactory.createLocationFinder(dimension),
-                    new CameraManager()
+                    new CameraManager(),
+                    kitCreatorFactory.createKitCreator(type)
             );
         };
     }

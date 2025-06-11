@@ -5,8 +5,18 @@ import java.util.Objects;
 import static com.plummy.cyhunters.CyHunters.getInstance;
 
 public enum GameDimension {
-    OVERWORLD,
-    NETHER;
+    OVERWORLD("Overworld"),
+    NETHER("Nether");
+
+    private final String name;
+
+    GameDimension(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return this.name;
+    }
 
     public static GameDimension getFromConfig() {
         String dimension = Objects.requireNonNull(getInstance().getConfig().getString("settings.style"));

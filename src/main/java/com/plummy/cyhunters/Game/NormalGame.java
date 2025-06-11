@@ -16,8 +16,8 @@ import java.util.Objects;
 import static com.plummy.cyhunters.CyHunters.getInstance;
 
 public class NormalGame extends AbstractGame {
-    public NormalGame(IPlayerManager playerManager, IScheduler scheduler, IGameBoard gameBoard, ILocationFinder locationFinder, ICameraManager cameraManager) {
-        super(playerManager, scheduler, gameBoard, locationFinder, cameraManager);
+    public NormalGame(IPlayerManager playerManager, IScheduler scheduler, IGameBoard gameBoard, ILocationFinder locationFinder, ICameraManager cameraManager, IKitCreator kitCreator) {
+        super(playerManager, scheduler, gameBoard, locationFinder, cameraManager, kitCreator);
     }
 
     @Override

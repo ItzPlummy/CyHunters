@@ -50,11 +50,11 @@ public final class CyHunters extends JavaPlugin {
         reloadConfig();
 
         logger.info("Creating and syncing game...");
-        mainGame = gameFactory.createGame(
+        setMainGame(gameFactory.createGame(
                 GameDimension.getFromConfig(),
                 GameStyle.getFromConfig(),
                 KitType.getFromConfig()
-        );
+        ));
         mainGame.sync();
         logger.info("Game synced!");
 
@@ -106,6 +106,10 @@ public final class CyHunters extends JavaPlugin {
 
     public static IGame getMainGame() {
         return mainGame;
+    }
+
+    public static void setMainGame(IGame game) {
+        mainGame = game;
     }
 
     public static NamespacedKey getNamespacedKey() {

@@ -17,8 +17,8 @@ import java.util.Objects;
 import static com.plummy.cyhunters.CyHunters.getInstance;
 
 public class BlitzGame extends AbstractGame {
-    public BlitzGame(IPlayerManager playerManager, IScheduler scheduler, IGameBoard gameBoard, ILocationFinder locationFinder, ICameraManager cameraManager) {
-        super(playerManager, scheduler, gameBoard, locationFinder, cameraManager);
+    public BlitzGame(IPlayerManager playerManager, IScheduler scheduler, IGameBoard gameBoard, ILocationFinder locationFinder, ICameraManager cameraManager, IKitCreator kitCreator) {
+        super(playerManager, scheduler, gameBoard, locationFinder, cameraManager, kitCreator);
     }
 
     @Override

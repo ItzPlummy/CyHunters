@@ -5,7 +5,7 @@ settings:
   dimension: overworld
   # Game style - [ normal, blitz ]
   style: normal
-  # Kit start - [ empty ]
+  # Kit - [ empty, basic, bow, shears, op, mace ]
   kit: empty
 
 parameters:

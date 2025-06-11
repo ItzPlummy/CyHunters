@@ -22,8 +22,9 @@ public abstract class AbstractGame implements IGame {
     private final IGameBoard gameBoard;
     private final ILocationFinder locationFinder;
     private final ICameraManager cameraManager;
+    private final IKitCreator kitCreator;
 
-    public AbstractGame(IPlayerManager playerManager, IScheduler scheduler, IGameBoard gameBoard, ILocationFinder locationFinder, ICameraManager cameraManager) {
+    public AbstractGame(IPlayerManager playerManager, IScheduler scheduler, IGameBoard gameBoard, ILocationFinder locationFinder, ICameraManager cameraManager, IKitCreator kitCreator) {
         this.state = GameState.NOT_STARTED;
 
         this.playerManager = playerManager;
@@ -31,6 +32,7 @@ public abstract class AbstractGame implements IGame {
         this.gameBoard = gameBoard;
         this.locationFinder = locationFinder;
         this.cameraManager = cameraManager;
+        this.kitCreator = kitCreator;
     }
 
     @Override
@@ -165,6 +167,8 @@ public abstract class AbstractGame implements IGame {
         setState(GameState.HANDICAP);
         getScheduler().start();
 
+        kitCreator.createSpeedrunnerKit(getPlayerManager().getSpeedrunner().getPlayer());
+
         for (IPlayer player : getPlayerManager().getOnlinePlayers()) {
             player.getPlayer().sendTitle("§b§lLets §d§lGo!", "", 0, 40, 60);
             player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
@@ -181,6 +185,10 @@ public abstract class AbstractGame implements IGame {
 
     protected void startDebut() {
         setState(GameState.DEBUT);
+
+        for (IHunter hunter : getPlayerManager().getHunters()) {
+            kitCreator.createHunterKit(hunter.getPlayer());
+        }
 
         for (IPlayer player : getPlayerManager().getOnlinePlayers()) {
             player.getPlayer().playSound(player.getPlayer(), Sound.BLOCK_END_PORTAL_SPAWN, 1f, 0.75f);

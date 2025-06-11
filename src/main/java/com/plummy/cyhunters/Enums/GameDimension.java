@@ -9,9 +9,9 @@ public enum GameDimension {
     NETHER;
 
     public static GameDimension getFromConfig() {
-        String style = Objects.requireNonNull(getInstance().getConfig().getString("settings.style"));
+        String dimension = Objects.requireNonNull(getInstance().getConfig().getString("settings.style"));
 
-        if (style.equals("nether")) {
+        if (dimension.equals("nether")) {
             return NETHER;
         } else {
             return OVERWORLD;

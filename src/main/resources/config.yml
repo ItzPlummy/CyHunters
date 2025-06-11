@@ -1,11 +1,11 @@
 # CyHunters 1.0 Config File
 
 settings:
-  # Game dimension - [ overworld, the_nether ]
+  # Game dimension - [ overworld, nether ]
   dimension: overworld
   # Game style - [ normal, blitz ]
   style: normal
-  # Kit start - [ empty ]
+  # Kit - [ empty, basic, bow, shears, op, mace ]
   kit: empty
 
 parameters:
@@ -19,7 +19,12 @@ parameters:
     hunter-spawn-distance: 3
   # Gameplay parameters
   game:
-    seconds-to-debut-per-player: 15
+    seconds-to-debut: 15
+    seconds-to-debut-blitz: 10
+    seconds-to-compass: 600
+    seconds-to-compass-blitz: 300
+    seconds-before-end: 900
+    border-size: 500
     respawn-delay: 30
   camera:
   # Camera position parameters

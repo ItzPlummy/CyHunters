@@ -1,5 +1,8 @@
 package com.plummy.cyhunters.Game;
 
+import com.plummy.cyhunters.Enums.GameDimension;
+import com.plummy.cyhunters.Enums.GameStyle;
+import com.plummy.cyhunters.Enums.KitType;
 import com.plummy.cyhunters.Iterfaces.IGameBoard;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -69,6 +72,10 @@ public class GameBoard implements IGameBoard {
         board.add("§f");
         board.add("§dPlayers: §e" + Bukkit.getOnlinePlayers().size());
         board.add("§f§f");
+        board.add("§bDimension: §e" + GameDimension.getFromConfig().getName());
+        board.add("§dStyle: §e" + GameStyle.getFromConfig().getName());
+        board.add("§bKit: §e" + KitType.getFromConfig().getName());
+        board.add("§f§f§f");
         board.add("§f§f---------------");
     }
 

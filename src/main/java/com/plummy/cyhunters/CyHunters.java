@@ -2,6 +2,8 @@ package com.plummy.cyhunters;
 
 import com.plummy.cyhunters.Commands.CyHuntersCommand;
 import com.plummy.cyhunters.Commands.CyHuntersCompleter;
+import com.plummy.cyhunters.Enums.GameDimension;
+import com.plummy.cyhunters.Enums.GameStyle;
 import com.plummy.cyhunters.Game.GameFactory;
 import com.plummy.cyhunters.Iterfaces.IGame;
 import com.plummy.cyhunters.Iterfaces.IHunter;
@@ -47,7 +49,10 @@ public final class CyHunters extends JavaPlugin {
         reloadConfig();
 
         logger.info("Creating and syncing game...");
-        mainGame = gameFactory.createGame();
+        mainGame = gameFactory.createGame(
+                GameDimension.getFromConfig(),
+                GameStyle.getFromConfig()
+        );
         mainGame.sync();
         logger.info("Game synced!");
 

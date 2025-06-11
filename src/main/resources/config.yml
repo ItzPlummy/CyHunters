@@ -23,6 +23,7 @@ parameters:
     seconds-to-debut-blitz: 10
     seconds-to-compass: 600
     seconds-to-compass-blitz: 300
+    seconds-before-end: 900
     border-size: 500
     respawn-delay: 30
   camera:

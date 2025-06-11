@@ -4,17 +4,17 @@ import java.util.Objects;
 
 import static com.plummy.cyhunters.CyHunters.getInstance;
 
-public enum GameStyle {
-    NORMAL,
-    BLITZ;
+public enum GameDimension {
+    OVERWORLD,
+    NETHER;
 
-    public static GameStyle getFromConfig() {
+    public static GameDimension getFromConfig() {
         String style = Objects.requireNonNull(getInstance().getConfig().getString("settings.style"));
 
-        if (style.equals("blitz")) {
-            return BLITZ;
+        if (style.equals("nether")) {
+            return NETHER;
         } else {
-            return NORMAL;
+            return OVERWORLD;
         }
     }
 }

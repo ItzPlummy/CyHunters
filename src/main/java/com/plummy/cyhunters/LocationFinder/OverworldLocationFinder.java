@@ -1,4 +1,4 @@
-package com.plummy.cyhunters.Game;
+package com.plummy.cyhunters.LocationFinder;
 
 import com.plummy.cyhunters.Iterfaces.ILocationFinder;
 import org.bukkit.Location;
@@ -13,7 +13,7 @@ import java.util.Random;
 
 import static com.plummy.cyhunters.CyHunters.getInstance;
 
-public class LocationFinder implements ILocationFinder {
+public class OverworldLocationFinder implements ILocationFinder {
     private static final List<Structure> searchStructures = List.of(
             Structure.VILLAGE_PLAINS,
             Structure.VILLAGE_DESERT,
@@ -29,24 +29,16 @@ public class LocationFinder implements ILocationFinder {
 
     private final Random random;
 
-    private final int searchRadius;
-    private final int structureOffset;
-    private final int minDistance;
-    private final int maxDistance;
-    private final int minHeight;
-
-    public LocationFinder() {
+    public OverworldLocationFinder() {
         random = new Random();
-
-        searchRadius = getInstance().getConfig().getInt("parameters.spawn.location-search-radius");
-        structureOffset = getInstance().getConfig().getInt("parameters.spawn.structure-offset");
-        minDistance = getInstance().getConfig().getInt("parameters.spawn.min-offset-distance");
-        maxDistance = getInstance().getConfig().getInt("parameters.spawn.max-offset-distance");
-        minHeight = getInstance().getConfig().getInt("parameters.spawn.min-height");
     }
 
     public Location findLocation(World world) {
         Location structureLocation;
+
+        int minDistance = getInstance().getConfig().getInt("parameters.spawn.min-offset-distance");
+        int maxDistance = getInstance().getConfig().getInt("parameters.spawn.max-offset-distance");
+        int minHeight = getInstance().getConfig().getInt("parameters.spawn.min-height");
 
         for (int i = 0; i < 5; i++) {
             structureLocation = findStructureLocation(world);
@@ -76,6 +68,9 @@ public class LocationFinder implements ILocationFinder {
     }
 
     private Location findStructureLocation(World world) {
+        int searchRadius = getInstance().getConfig().getInt("parameters.spawn.location-search-radius");
+        int structureOffset = getInstance().getConfig().getInt("parameters.spawn.structure-offset");
+
         Location randomLocation = new Location(world, random.nextInt(-searchRadius, searchRadius), 0, random.nextInt(-searchRadius, searchRadius));
 
         List<StructureSearchResult> searchResults = searchStructures.stream().map(structure -> world.locateNearestStructure(randomLocation, structure, structureOffset, false)).toList();

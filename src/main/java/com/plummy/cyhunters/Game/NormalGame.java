@@ -2,6 +2,7 @@ package com.plummy.cyhunters.Game;
 
 import com.plummy.cyhunters.Camera.CameraManager;
 import com.plummy.cyhunters.Enums.GameStyle;
+import com.plummy.cyhunters.Iterfaces.*;
 import com.plummy.cyhunters.Player.PlayerManager;
 import com.plummy.cyhunters.Scheduler.GameScheduler;
 import org.bukkit.Bukkit;
@@ -15,14 +16,8 @@ import java.util.Objects;
 import static com.plummy.cyhunters.CyHunters.getInstance;
 
 public class NormalGame extends AbstractGame {
-    public NormalGame() {
-        super(
-                new PlayerManager(),
-                new GameScheduler(),
-                new GameBoard(),
-                new LocationFinder(),
-                new CameraManager()
-        );
+    public NormalGame(IPlayerManager playerManager, IScheduler scheduler, IGameBoard gameBoard, ILocationFinder locationFinder, ICameraManager cameraManager) {
+        super(playerManager, scheduler, gameBoard, locationFinder, cameraManager);
     }
 
     @Override

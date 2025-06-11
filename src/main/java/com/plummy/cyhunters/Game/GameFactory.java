@@ -1,19 +1,39 @@
 package com.plummy.cyhunters.Game;
 
+import com.plummy.cyhunters.Camera.CameraManager;
+import com.plummy.cyhunters.Enums.GameDimension;
 import com.plummy.cyhunters.Enums.GameStyle;
 import com.plummy.cyhunters.Iterfaces.IGame;
 import com.plummy.cyhunters.Iterfaces.IGameFactory;
-
-import java.util.Objects;
-
-import static com.plummy.cyhunters.CyHunters.getInstance;
+import com.plummy.cyhunters.Iterfaces.ILocationFinderFactory;
+import com.plummy.cyhunters.LocationFinder.LocationFinderFactory;
+import com.plummy.cyhunters.Player.PlayerManager;
+import com.plummy.cyhunters.Scheduler.GameScheduler;
 
 public class GameFactory implements IGameFactory {
-    public GameFactory() {}
+    private final ILocationFinderFactory locationFinderFactory;
 
-    public IGame createGame() {
-        GameStyle style = GameStyle.get(Objects.requireNonNull(getInstance().getConfig().getString("settings.style")));
+    public GameFactory() {
+        this.locationFinderFactory = new LocationFinderFactory();
+    }
 
-        return style == GameStyle.BLITZ ? new BlitzGame() : new NormalGame();
+    @Override
+    public IGame createGame(GameDimension dimension, GameStyle style) {
+        return switch (style) {
+            case NORMAL -> new NormalGame(
+                    new PlayerManager(),
+                    new GameScheduler(),
+                    new GameBoard(),
+                    locationFinderFactory.createLocationFinder(dimension),
+                    new CameraManager()
+            );
+            case BLITZ -> new BlitzGame(
+                    new PlayerManager(),
+                    new GameScheduler(),
+                    new GameBoard(),
+                    locationFinderFactory.createLocationFinder(dimension),
+                    new CameraManager()
+            );
+        };
     }
 }

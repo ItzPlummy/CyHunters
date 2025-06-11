@@ -135,7 +135,7 @@ public class PlayerManager implements IPlayerManager {
 
     @Override
     public void ready(Location location) {
-        int distance = getInstance().getConfig().getInt("spawn.hunter-spawn-distance");
+        int distance = getInstance().getConfig().getInt("parameters.spawn.hunter-spawn-distance");
         double angle = 0;
 
         Objects.requireNonNull(location.getWorld()).setSpawnLocation(location);

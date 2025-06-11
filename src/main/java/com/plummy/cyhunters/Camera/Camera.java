@@ -29,9 +29,9 @@ public class Camera implements ICamera {
         this.targetIndex = 0;
 
         this.isAttached = false;
-        this.yaw = getInstance().getConfig().getInt("camera.default-yaw");
-        this.pitch = getInstance().getConfig().getInt("camera.default-pitch");
-        this.offset = getInstance().getConfig().getInt("camera.default-offset");
+        this.yaw = getInstance().getConfig().getInt("parameters.camera.default-yaw");
+        this.pitch = getInstance().getConfig().getInt("parameters.camera.default-pitch");
+        this.offset = getInstance().getConfig().getInt("parameters.camera.default-offset");
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.plummy.cyhunters.Game.LocationFinder;
 import com.plummy.cyhunters.Iterfaces.IGame;
 import com.plummy.cyhunters.Listeners.CameraListener;
 import com.plummy.cyhunters.Listeners.PlayerListener;
+import com.plummy.cyhunters.Listeners.PrepareListener;
 import com.plummy.cyhunters.Player.PlayerManager;
 import com.plummy.cyhunters.Scheduler.GameScheduler;
 import org.bukkit.Bukkit;
@@ -66,6 +67,7 @@ public final class CyHunters extends JavaPlugin {
         logger.info("Registering listeners...");
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), instance);
         Bukkit.getPluginManager().registerEvents(new CameraListener(), instance);
+        Bukkit.getPluginManager().registerEvents(new PrepareListener(), instance);
         logger.info("Listeners registered!");
 
         logger.info("Plugin Enabled!");

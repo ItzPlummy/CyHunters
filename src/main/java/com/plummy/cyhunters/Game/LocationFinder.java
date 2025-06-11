@@ -38,11 +38,11 @@ public class LocationFinder implements ILocationFinder {
     public LocationFinder() {
         random = new Random();
 
-        searchRadius = getInstance().getConfig().getInt("spawn.location-search-radius");
-        structureOffset = getInstance().getConfig().getInt("spawn.structure-offset");
-        minDistance = getInstance().getConfig().getInt("spawn.min-offset-distance");
-        maxDistance = getInstance().getConfig().getInt("spawn.max-offset-distance");
-        minHeight = getInstance().getConfig().getInt("spawn.min-height");
+        searchRadius = getInstance().getConfig().getInt("parameters.spawn.location-search-radius");
+        structureOffset = getInstance().getConfig().getInt("parameters.spawn.structure-offset");
+        minDistance = getInstance().getConfig().getInt("parameters.spawn.min-offset-distance");
+        maxDistance = getInstance().getConfig().getInt("parameters.spawn.max-offset-distance");
+        minHeight = getInstance().getConfig().getInt("parameters.spawn.min-height");
     }
 
     public Location findLocation(World world) {

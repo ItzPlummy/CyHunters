@@ -135,8 +135,10 @@ public class Game implements IGame {
                 playerManager.ready(location);
                 sync();
 
+                Objects.requireNonNull(location.getWorld()).setTime(0);
                 Objects.requireNonNull(location.getWorld()).setGameRule(GameRule.KEEP_INVENTORY, false);
                 Objects.requireNonNull(location.getWorld()).setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+                Objects.requireNonNull(location.getWorld()).setGameRule(GameRule.DO_INSOMNIA, false);
 
                 for (IPlayer player : playerManager.getOnlinePlayers()) {
                     player.getPlayer().sendTitle("§b§lCy§d§lHunters", "§3Let the fun §5Begin§3!", 0, 40, 0);

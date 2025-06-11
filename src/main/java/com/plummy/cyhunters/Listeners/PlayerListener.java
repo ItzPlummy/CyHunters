@@ -3,8 +3,6 @@ package com.plummy.cyhunters.Listeners;
 import com.plummy.cyhunters.Enums.GameEndingReason;
 import com.plummy.cyhunters.Iterfaces.IHunter;
 import com.plummy.cyhunters.Iterfaces.ISpeedrunner;
-import com.plummy.cyhunters.Player.Hunter;
-import com.plummy.cyhunters.Player.Spectator;
 import com.plummy.cyhunters.Player.Speedrunner;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -16,7 +14,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import static com.plummy.cyhunters.CyHunters.getInstance;
@@ -67,27 +68,6 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerMove(PlayerMoveEvent e) {
-        if (getMainGame().preparing()) {
-            if (getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId()) instanceof Spectator) {
-                return;
-            }
-
-            if (e.getTo() == null || !(e.getFrom().getX() == e.getTo().getX() && e.getFrom().getZ() == e.getTo().getZ())) {
-                e.setCancelled(true);
-            }
-        } else if (getMainGame().handicap()) {
-            if (!(getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId()) instanceof Hunter)) {
-                return;
-            }
-
-            if (e.getTo() == null || !(e.getFrom().getX() == e.getTo().getX() && e.getFrom().getZ() == e.getTo().getZ())) {
-                e.setCancelled(true);
-            }
-        }
-    }
-
-    @EventHandler
     public void onPlayerDie(PlayerDeathEvent e) {
         if (!getMainGame().hasStarted()) {
             return;
@@ -112,7 +92,7 @@ public class PlayerListener implements Listener {
 
         Bukkit.getScheduler().runTaskLater(getInstance(), player::setSpectating, 1L);
 
-        int respawnDelay = getInstance().getConfig().getInt("game.respawn-delay");
+        int respawnDelay = getInstance().getConfig().getInt("parameters.game.respawn-delay");
 
         getMainGame().getScheduler().addRunnable(new BukkitRunnable() {
             @Override

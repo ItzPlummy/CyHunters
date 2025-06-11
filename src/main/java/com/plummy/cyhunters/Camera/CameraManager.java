@@ -51,11 +51,22 @@ public class CameraManager implements ICameraManager {
 
     @Override
     public void detachCamera(UUID uuid, UUID cameraUUID) {
-        cameras.get(uuid).removeIf(camera -> camera.getUUID().equals(cameraUUID));
+        ICamera camera = cameras.get(uuid).stream().filter(c -> c.getUUID().equals(cameraUUID)).findFirst().orElse(null);
+
+        if (camera == null) {
+            return;
+        }
+
+        camera.getCameraSelector().attachCamera();
+        cameras.get(uuid).removeIf(c -> c.getUUID().equals(cameraUUID));
     }
 
     @Override
     public void detachAllCameras(UUID uuid) {
+        for (ICamera camera : cameras.get(uuid)) {
+            camera.getCameraSelector().attachCamera();
+        }
+
         cameras.get(uuid).clear();
     }
 

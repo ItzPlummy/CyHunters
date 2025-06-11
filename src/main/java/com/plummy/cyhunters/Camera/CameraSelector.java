@@ -19,6 +19,7 @@ public class CameraSelector implements ICameraSelector {
 
     public CameraSelector(ICamera camera) {
         this.camera = camera;
+        this.camera.setCameraSelector(this);
     }
 
     @Override

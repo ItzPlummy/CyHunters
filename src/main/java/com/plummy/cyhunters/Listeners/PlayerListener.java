@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import static com.plummy.cyhunters.CyHunters.getInstance;
 import static com.plummy.cyhunters.CyHunters.getMainGame;
@@ -98,5 +99,12 @@ public class PlayerListener implements Listener {
         }
 
         player.setSpectating();
+
+        getMainGame().getScheduler().addRunnable(new BukkitRunnable() {
+            @Override
+            public void run() {
+                player.setPlaying();
+            }
+        }, 3L, false);
     }
 }

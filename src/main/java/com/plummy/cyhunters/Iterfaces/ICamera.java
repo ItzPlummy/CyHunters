@@ -6,6 +6,8 @@ import java.util.UUID;
 
 public interface ICamera {
     UUID getUUID();
+    ICameraSelector getCameraSelector();
+    void setCameraSelector(ICameraSelector cameraSelector);
     void setLocation(Location location);
     void updateLocation();
     void rotate(float degrees);

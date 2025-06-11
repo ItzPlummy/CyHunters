@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import static com.plummy.cyhunters.CyHunters.getInstance;
@@ -59,7 +60,15 @@ public class Hunter extends AbstractPlayer implements IHunter {
 
     @Override
     public void setPlaying() {
+        if (!isOnline() || !isSpectating()) {
+            return;
+        }
 
+        setState(PlayerState.PLAYING);
+        getPlayer().setGameMode(GameMode.SURVIVAL);
+        getPlayer().teleport(Objects.requireNonNull(getPlayer().getRespawnLocation()));
+
+        getCameraSelector().detachCamera();
     }
 
     @Override

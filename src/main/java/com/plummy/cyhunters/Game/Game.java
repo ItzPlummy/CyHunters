@@ -18,14 +18,16 @@ public class Game implements IGame {
     private GameState state;
 
     private final IPlayerManager playerManager;
+    private final IScheduler scheduler;
     private final IGameBoard gameBoard;
     private final ILocationFinder locationFinder;
     private final ICameraManager cameraManager;
 
-    public Game(IPlayerManager playerManager, IGameBoard gameBoard, ILocationFinder locationFinder, ICameraManager cameraManager) {
+    public Game(IPlayerManager playerManager, IScheduler scheduler, IGameBoard gameBoard, ILocationFinder locationFinder, ICameraManager cameraManager) {
         this.state = GameState.NOT_STARTED;
 
         this.playerManager = playerManager;
+        this.scheduler = scheduler;
         this.gameBoard = gameBoard;
         this.locationFinder = locationFinder;
         this.cameraManager = cameraManager;
@@ -34,6 +36,11 @@ public class Game implements IGame {
     @Override
     public IPlayerManager getPlayerManager() {
         return playerManager;
+    }
+
+    @Override
+    public IScheduler getScheduler() {
+        return scheduler;
     }
 
     @Override
@@ -132,7 +139,7 @@ public class Game implements IGame {
                     state = GameState.HANDICAP;
 
                     for (IPlayer player : playerManager.getOnlinePlayers()) {
-                        player.getPlayer().sendTitle("§b§lLets §d§lGo!", "", 0, 40, 0);
+                        player.getPlayer().sendTitle("§b§lLets §d§lGo!", "", 0, 40, 60);
                         player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
                         player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_DRAGON_FIREBALL_EXPLODE, 1f, 1f);
                     }
@@ -167,6 +174,7 @@ public class Game implements IGame {
         }
 
         playerManager.resetPlayers();
+        scheduler.stop();
         cameraManager.resetPlayers();
         sync();
 

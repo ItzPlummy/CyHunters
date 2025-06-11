@@ -1,5 +1,6 @@
 package com.plummy.cyhunters;
 
+import com.plummy.cyhunters.Scheduler.GameScheduler;
 import com.plummy.cyhunters.Iterfaces.IGame;
 import com.plummy.cyhunters.Camera.CameraManager;
 import com.plummy.cyhunters.Commands.CyHuntersCommand;
@@ -45,6 +46,7 @@ public final class CyHunters extends JavaPlugin {
         logger.info("Creating and syncing game...");
         mainGame = new Game(
                 new PlayerManager(),
+                new GameScheduler(),
                 new GameBoard(),
                 new LocationFinder(),
                 new CameraManager()

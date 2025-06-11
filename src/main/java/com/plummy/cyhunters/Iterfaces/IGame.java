@@ -9,6 +9,8 @@ import java.util.UUID;
 public interface IGame {
     IPlayerManager getPlayerManager();
 
+    IScheduler getScheduler();
+
     IGameBoard getGameBoard();
 
     ILocationFinder getLocationFinder();

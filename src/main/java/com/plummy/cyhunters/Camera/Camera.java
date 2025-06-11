@@ -1,6 +1,7 @@
 package com.plummy.cyhunters.Camera;
 
 import com.plummy.cyhunters.Iterfaces.ICamera;
+import com.plummy.cyhunters.Iterfaces.ICameraSelector;
 import com.plummy.cyhunters.Iterfaces.IHunter;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
@@ -9,12 +10,14 @@ import java.util.UUID;
 
 public class Camera implements ICamera {
     private final IHunter player;
+    private ICameraSelector cameraSelector;
     private Location location;
 
     private float yaw;
 
     public Camera(IHunter player) {
         this.player = player;
+        this.cameraSelector = null;
         this.location = null;
 
         this.yaw = 30;
@@ -23,6 +26,16 @@ public class Camera implements ICamera {
     @Override
     public UUID getUUID() {
         return player.getPlayer().getUniqueId();
+    }
+
+    @Override
+    public ICameraSelector getCameraSelector() {
+        return cameraSelector;
+    }
+
+    @Override
+    public void setCameraSelector(ICameraSelector cameraSelector) {
+        this.cameraSelector = cameraSelector;
     }
 
     @Override

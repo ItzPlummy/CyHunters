@@ -19,6 +19,7 @@ parameters:
     hunter-spawn-distance: 3
   # Gameplay parameters
   game:
+    seconds-to-debut-per-player: 15
     respawn-delay: 30
   camera:
   # Camera position parameters

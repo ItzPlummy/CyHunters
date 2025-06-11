@@ -140,6 +140,8 @@ public class Game implements IGame {
                 Objects.requireNonNull(location.getWorld()).setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
                 Objects.requireNonNull(location.getWorld()).setGameRule(GameRule.DO_INSOMNIA, false);
 
+                Long secondsToDebut = getInstance().getConfig().getLong("parameters.game.seconds-to-debut-per-player");
+
                 for (IPlayer player : playerManager.getOnlinePlayers()) {
                     player.getPlayer().sendTitle("§b§lCy§d§lHunters", "§3Let the fun §5Begin§3!", 0, 40, 0);
                     player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.843f, 1f);
@@ -171,7 +173,7 @@ public class Game implements IGame {
                     }
 
                     send("§e§lHandicap stage has been started!");
-                    send("§eSpeedrunner has 1 minute to ready up, before");
+                    send("§eSpeedrunner has " + secondsToDebut + " seconds to ready up, before");
                     send("§ehunters will start to chase him!");
                 }, 80L);
 
@@ -186,7 +188,7 @@ public class Game implements IGame {
 
                         send("§c§lHunters are free!");
                     }
-                }, 60L, false);
+                }, secondsToDebut, false);
 
                 scheduler.addRunnable(new BukkitRunnable() {
                     @Override
@@ -201,7 +203,7 @@ public class Game implements IGame {
 
                         send("§cHunters now got compasses to track down the speedrunner!");
                     }
-                }, 960L, false);
+                }, 600L, false);
             });
         });
     }

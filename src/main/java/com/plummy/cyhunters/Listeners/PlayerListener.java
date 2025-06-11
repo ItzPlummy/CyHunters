@@ -1,6 +1,7 @@
 package com.plummy.cyhunters.Listeners;
 
 import com.plummy.cyhunters.Enums.GameEndingReason;
+import com.plummy.cyhunters.Iterfaces.IHunter;
 import com.plummy.cyhunters.Player.Hunter;
 import com.plummy.cyhunters.Player.Spectator;
 import com.plummy.cyhunters.Player.Speedrunner;
@@ -94,7 +95,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        if (!(getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId()) instanceof Hunter player)) {
+        if (!(getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId()) instanceof IHunter player)) {
             return;
         }
 
@@ -105,6 +106,6 @@ public class PlayerListener implements Listener {
             public void run() {
                 player.setPlaying();
             }
-        }, 3L, false);
+        }, 10L, false);
     }
 }

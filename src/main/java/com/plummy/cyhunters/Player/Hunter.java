@@ -9,6 +9,7 @@ import com.plummy.cyhunters.Iterfaces.IHunter;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -56,6 +57,9 @@ public class Hunter extends AbstractPlayer implements IHunter {
 
         getMainGame().getCameraManager().detachAllCameras(getPlayer().getUniqueId());
         getCameraSelector().attachCamera();
+
+        getPlayer().sendTitle("§c§lYou Died!", "§4Revival in 30 seconds", 0, 40, 60);
+        getPlayer().playSound(getPlayer(), Sound.BLOCK_RESPAWN_ANCHOR_DEPLETE, 1, 0.5f);
     }
 
     @Override
@@ -69,6 +73,9 @@ public class Hunter extends AbstractPlayer implements IHunter {
         getPlayer().teleport(Objects.requireNonNull(getPlayer().getRespawnLocation()));
 
         getCameraSelector().detachCamera();
+
+        getPlayer().sendTitle("§a§lYou Revived!", "", 0, 40, 60);
+        getPlayer().playSound(getPlayer(), Sound.BLOCK_RESPAWN_ANCHOR_DEPLETE, 1, 0.5f);
     }
 
     @Override

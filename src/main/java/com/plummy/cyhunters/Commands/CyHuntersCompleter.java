@@ -12,7 +12,9 @@ public class CyHuntersCompleter implements TabCompleter {
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if (args.length == 1) {
             return List.of(
-                    "start"
+                    "start",
+                    "stop",
+                    "help"
             );
         }
 

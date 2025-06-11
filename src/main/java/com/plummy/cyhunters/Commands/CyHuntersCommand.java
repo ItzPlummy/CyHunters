@@ -13,26 +13,42 @@ public class CyHuntersCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("Nope");
+            sender.sendMessage("§cError: Only players can execute command /cyhunters");
 
             return true;
         }
 
         if (args.length == 0) {
-            sender.sendMessage("CyHunters");
-
+            sendHelp(player);
             return true;
         }
 
         switch (args[0]) {
-            case "start" -> {
-                getMainGame().start(getMainGame().getPlayerManager().getPlayer(player.getUniqueId()));
-            }
-            case "stop" -> {
-                getMainGame().stop(GameEndingReason.COMMAND, getMainGame().getPlayerManager().getPlayer(player.getUniqueId()));
-            }
+            case "start" -> onGameStart(player);
+            case "stop" -> onGameStop(player);
+            case "help" -> sendHelp(player);
         }
 
         return true;
+    }
+
+    private void onGameStart(Player player) {
+        if (getMainGame().hasStarted()) {
+            player.sendMessage("§cError: Game has already started");
+        }
+
+        getMainGame().start(getMainGame().getPlayerManager().getPlayer(player.getUniqueId()));
+    }
+
+    private void onGameStop(Player player) {
+        if (getMainGame().hasStarted()) {
+            player.sendMessage("§cError: Game has not been started");
+        }
+
+        getMainGame().stop(GameEndingReason.COMMAND, getMainGame().getPlayerManager().getPlayer(player.getUniqueId()));
+    }
+
+    private void sendHelp(Player player) {
+        player.sendMessage("Help");
     }
 }

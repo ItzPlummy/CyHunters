@@ -20,9 +20,10 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 public final class CyHunters extends JavaPlugin {
+    private static final NamespacedKey namespacedKey = Objects.requireNonNull(NamespacedKey.fromString("cyhunters"));
+
     private static CyHunters instance;
     private static IGame mainGame;
-    private static NamespacedKey namespacedKey = NamespacedKey.fromString("cyhunters");
     private static Logger logger;
 
     {

@@ -118,7 +118,7 @@ public class Game implements IGame {
         send("§aSearching for a suitable location...");
 
         Bukkit.getScheduler().runTaskAsynchronously(getInstance(), () -> {
-            Location location = locationFinder.findLocation(Bukkit.getWorlds().get(0));
+            Location location = locationFinder.findLocation(startPlayer.getWorld());
 
             Bukkit.getScheduler().runTask(getInstance(), () -> {
                 if (location == null) {

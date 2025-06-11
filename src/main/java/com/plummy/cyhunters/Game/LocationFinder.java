@@ -11,11 +11,9 @@ import org.bukkit.util.StructureSearchResult;
 import java.util.List;
 import java.util.Random;
 
-public class LocationFinder implements ILocationFinder {
-    private final static int searchRadius = 25000;
-    private final static int minDistance = 50;
-    private final static int maxDistance = 200;
+import static com.plummy.cyhunters.CyHunters.getInstance;
 
+public class LocationFinder implements ILocationFinder {
     private static final List<Structure> searchStructures = List.of(
             Structure.VILLAGE_PLAINS,
             Structure.VILLAGE_DESERT,
@@ -31,8 +29,20 @@ public class LocationFinder implements ILocationFinder {
 
     private final Random random;
 
+    private final int searchRadius;
+    private final int structureOffset;
+    private final int minDistance;
+    private final int maxDistance;
+    private final int minHeight;
+
     public LocationFinder() {
         random = new Random();
+
+        searchRadius = getInstance().getConfig().getInt("spawn.location-search-radius");
+        structureOffset = getInstance().getConfig().getInt("spawn.structure-offset");
+        minDistance = getInstance().getConfig().getInt("spawn.min-offset-distance");
+        maxDistance = getInstance().getConfig().getInt("spawn.max-offset-distance");
+        minHeight = getInstance().getConfig().getInt("spawn.min-height");
     }
 
     public Location findLocation(World world) {
@@ -54,7 +64,7 @@ public class LocationFinder implements ILocationFinder {
 
                 Block block = world.getHighestBlockAt((int) (x + distance * Math.cos(angle)), (int) (z + distance * Math.sin(angle)));
 
-                if (permittedMaterials.contains(block.getType()) || block.getY() < 64) {
+                if (permittedMaterials.contains(block.getType()) || block.getY() < minHeight) {
                     continue;
                 }
 
@@ -68,7 +78,7 @@ public class LocationFinder implements ILocationFinder {
     private Location findStructureLocation(World world) {
         Location randomLocation = new Location(world, random.nextInt(-searchRadius, searchRadius), 0, random.nextInt(-searchRadius, searchRadius));
 
-        List<StructureSearchResult> searchResults = searchStructures.stream().map(structure -> world.locateNearestStructure(randomLocation, structure, 500, false)).toList();
+        List<StructureSearchResult> searchResults = searchStructures.stream().map(structure -> world.locateNearestStructure(randomLocation, structure, structureOffset, false)).toList();
 
         double nearestDistance = Double.MAX_VALUE;
         StructureSearchResult nearestResult = null;

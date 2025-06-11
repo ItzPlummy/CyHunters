@@ -1,1 +1,27 @@
 # CyHunters 1.0 Config File
+
+settings:
+  # Game dimension - [ overworld, the_nether ]
+  dimension: overworld
+  # Game style - [ normal, blitz ]
+  style: normal
+  # Kit start - [ empty ]
+  kit: empty
+
+parameters:
+  # Parameters of spawn location search and player distribution
+  spawn:
+    location-search-radius: 25000
+    structure-offset: 500
+    min-offset-distance: 50
+    max-offset-distance: 200
+    min-height: 64
+    hunter-spawn-distance: 3
+  # Gameplay parameters
+  game:
+    respawn-delay: 30
+  camera:
+  # Camera position parameters
+    default-yaw: 30
+    default-pitch: 5
+    default-offset: 2

@@ -112,20 +112,22 @@ public class PlayerListener implements Listener {
 
         Bukkit.getScheduler().runTaskLater(getInstance(), player::setSpectating, 1L);
 
+        int respawnDelay = getInstance().getConfig().getInt("game.respawn-delay");
+
         getMainGame().getScheduler().addRunnable(new BukkitRunnable() {
             @Override
             public void run() {
                 player.setPlaying();
             }
-        }, 30L, false);
+        }, (long) respawnDelay, false);
 
-        for (long index = 1; index <= 30; index++) {
+        for (long index = 1; index <= respawnDelay; index++) {
             long finalIndex = index;
 
             getMainGame().getScheduler().addRunnable(new BukkitRunnable() {
                 @Override
                 public void run() {
-                    String text = finalIndex == 30 ? "§f" : "§cRespawn in " + (30 - finalIndex);
+                    String text = finalIndex == respawnDelay ? "§f" : "§cRespawn in " + (respawnDelay - finalIndex);
 
                     player.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(text));
                 }

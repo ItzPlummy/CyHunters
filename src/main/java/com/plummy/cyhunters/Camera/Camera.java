@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.plummy.cyhunters.CyHunters.getInstance;
 import static com.plummy.cyhunters.CyHunters.getMainGame;
 
 public class Camera implements ICamera {
@@ -19,6 +20,8 @@ public class Camera implements ICamera {
 
     private boolean isAttached;
     private float yaw;
+    private final float pitch;
+    private final float offset;
 
     public Camera(IHunter player) {
         this.player = player;
@@ -26,7 +29,9 @@ public class Camera implements ICamera {
         this.targetIndex = 0;
 
         this.isAttached = false;
-        this.yaw = 30;
+        this.yaw = getInstance().getConfig().getInt("camera.default-yaw");
+        this.pitch = getInstance().getConfig().getInt("camera.default-pitch");
+        this.offset = getInstance().getConfig().getInt("camera.default-offset");
     }
 
     @Override
@@ -101,13 +106,13 @@ public class Camera implements ICamera {
         }
 
         float piYaw = yaw * (float) Math.PI / 180;
-        float piPitch = 5 * (float) Math.PI / 180;
+        float piPitch = pitch * (float) Math.PI / 180;
 
         Vector offset = new Vector(Math.sin(piYaw) * Math.cos(piPitch), Math.sin(piPitch), -Math.cos(piYaw) * Math.cos(piPitch));
-        Location calculatedLocation = getTargetPlayer().getPlayer().getLocation().add(0, 0.5, 0).add(offset.multiply(2));
+        Location calculatedLocation = getTargetPlayer().getPlayer().getLocation().add(0, 0.5, 0).add(offset.multiply(offset.length() + this.offset));
 
         calculatedLocation.setYaw(yaw);
-        calculatedLocation.setPitch(5);
+        calculatedLocation.setPitch(pitch);
 
         player.getPlayer().teleport(calculatedLocation);
     }

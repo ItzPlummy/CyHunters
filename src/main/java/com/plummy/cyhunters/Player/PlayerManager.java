@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
+import static com.plummy.cyhunters.CyHunters.getInstance;
+
 public class PlayerManager implements IPlayerManager {
     private final Map<UUID, IPlayer> players;
 
@@ -133,7 +135,7 @@ public class PlayerManager implements IPlayerManager {
 
     @Override
     public void ready(Location location) {
-        double distance = 3;
+        int distance = getInstance().getConfig().getInt("spawn.hunter-spawn-distance");
         double angle = 0;
 
         Objects.requireNonNull(location.getWorld()).setSpawnLocation(location);

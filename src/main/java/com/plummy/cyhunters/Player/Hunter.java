@@ -2,20 +2,22 @@ package com.plummy.cyhunters.Player;
 
 import com.plummy.cyhunters.Camera.Camera;
 import com.plummy.cyhunters.Enums.PlayerState;
-import com.plummy.cyhunters.Game.ItemManager;
 import com.plummy.cyhunters.Iterfaces.ICamera;
 import com.plummy.cyhunters.Iterfaces.IHunter;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.CompassMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -81,7 +83,7 @@ public class Hunter extends AbstractPlayer implements IHunter {
         getPlayer().playSound(getPlayer(), Sound.ENTITY_PLAYER_LEVELUP, 1, 0.5f);
 
         if (getMainGame().debuted()) {
-            getPlayer().getInventory().addItem(ItemManager.createCompass());
+            getPlayer().getInventory().addItem(createCompass());
         }
     }
 
@@ -103,7 +105,7 @@ public class Hunter extends AbstractPlayer implements IHunter {
             return;
         }
 
-        getPlayer().getInventory().addItem(ItemManager.createCompass());
+        getPlayer().getInventory().addItem(createCompass());
     }
 
     @Override
@@ -161,5 +163,21 @@ public class Hunter extends AbstractPlayer implements IHunter {
         compassMeta.setLodestoneTracked(false);
 
         compass.setItemMeta(compassMeta);
+    }
+
+    private static ItemStack createCompass() {
+        ItemStack compass = new ItemStack(Material.COMPASS, 1);
+        CompassMeta compassMeta = (CompassMeta) compass.getItemMeta();
+
+        assert compassMeta != null;
+
+        compassMeta.setDisplayName("§c§lHunter's Compass");
+        compassMeta.setLore(List.of("§4Points to speedrunner's location"));
+        compassMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS);
+        compassMeta.addEnchant(Enchantment.VANISHING_CURSE, 1, true);
+        compassMeta.getPersistentDataContainer().set(getNamespacedKey(), PersistentDataType.STRING, "compass");
+
+        compass.setItemMeta(compassMeta);
+        return compass;
     }
 }

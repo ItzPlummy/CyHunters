@@ -1,6 +1,5 @@
 package com.plummy.cyhunters.Game;
 
-import com.plummy.cyhunters.Iterfaces.IHunter;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -10,7 +9,6 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
 
-import static com.plummy.cyhunters.CyHunters.getMainGame;
 import static com.plummy.cyhunters.CyHunters.getNamespacedKey;
 
 public class ItemManager {
@@ -28,28 +26,5 @@ public class ItemManager {
 
         compass.setItemMeta(compassMeta);
         return compass;
-    }
-
-    public static void updateCompasses() {
-        if (!getMainGame().hasStarted()) {
-            return;
-        }
-
-        for (IHunter hunter : getMainGame().getPlayerManager().getHunters()) {
-            ItemStack item = hunter.getPlayer().getInventory().getItemInMainHand();
-            if (item.getType() != Material.COMPASS) {
-                return;
-            }
-
-            CompassMeta compassMeta = (CompassMeta) item.getItemMeta();
-            assert compassMeta != null;
-
-            String pdc = compassMeta.getPersistentDataContainer().get(getNamespacedKey(), PersistentDataType.STRING);
-            if (pdc == null || !pdc.equals("compass")) {
-                return;
-            }
-
-            hunter.getPlayer().setCompassTarget(getMainGame().getPlayerManager().getSpeedrunner().getPlayer().getLocation());
-        }
     }
 }

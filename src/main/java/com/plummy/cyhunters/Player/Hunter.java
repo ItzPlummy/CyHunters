@@ -7,14 +7,20 @@ import com.plummy.cyhunters.Iterfaces.ICamera;
 import com.plummy.cyhunters.Iterfaces.IHunter;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.CompassMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import static com.plummy.cyhunters.CyHunters.getMainGame;
+import static com.plummy.cyhunters.CyHunters.getNamespacedKey;
 
 public class Hunter extends AbstractPlayer implements IHunter {
     private final ICamera camera;
@@ -98,5 +104,62 @@ public class Hunter extends AbstractPlayer implements IHunter {
         }
 
         getPlayer().getInventory().addItem(ItemManager.createCompass());
+    }
+
+    @Override
+    public void updateCompass() {
+        if (!isOnline() || isSpectating()) {
+            return;
+        }
+
+        if (!getMainGame().getPlayerManager().getSpeedrunner().isOnline()) {
+            return;
+        }
+
+        Location speedrunnerLocation = getMainGame().getPlayerManager().getSpeedrunner().getPlayer().getLocation();
+
+        if (!Objects.requireNonNull(getPlayer().getLocation().getWorld()).equals(speedrunnerLocation.getWorld())) {
+            return;
+        }
+
+        for (ItemStack item : getPlayer().getInventory().getContents()) {
+            if (isCompass(item)) {
+                updateCompassTarget(item, speedrunnerLocation);
+            }
+        }
+    }
+
+    private boolean isCompass(ItemStack item) {
+        if (item == null) {
+            return false;
+        }
+
+        if (item.getType() != Material.COMPASS) {
+            return false;
+        }
+
+        CompassMeta compassMeta = (CompassMeta) item.getItemMeta();
+        assert compassMeta != null;
+
+        String pdc = compassMeta.getPersistentDataContainer().get(getNamespacedKey(), PersistentDataType.STRING);
+        return pdc != null && pdc.equals("compass");
+    }
+
+    private void updateCompassTarget(ItemStack compass, Location location) {
+        if (compass == null) {
+            return;
+        }
+
+        if (compass.getType() != Material.COMPASS) {
+            return;
+        }
+
+        CompassMeta compassMeta = (CompassMeta) compass.getItemMeta();
+        assert compassMeta != null;
+
+        compassMeta.setLodestone(location);
+        compassMeta.setLodestoneTracked(false);
+
+        compass.setItemMeta(compassMeta);
     }
 }

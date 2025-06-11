@@ -14,4 +14,6 @@ public interface IHunter extends IPlayer {
     void ready(Location location);
 
     void giveCompass();
+
+    void updateCompass();
 }

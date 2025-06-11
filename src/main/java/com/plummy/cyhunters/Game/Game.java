@@ -9,8 +9,6 @@ import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
@@ -145,8 +143,6 @@ public class Game implements IGame {
                 for (IPlayer player : playerManager.getOnlinePlayers()) {
                     player.getPlayer().sendTitle("§b§lCy§d§lHunters", "§3Let the fun §5Begin§3!", 0, 40, 0);
                     player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.843f, 1f);
-
-                    player.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 1280, 255, true, false, false));
                 }
 
                 Bukkit.getScheduler().runTaskLater(getInstance(), () -> {
@@ -185,6 +181,7 @@ public class Game implements IGame {
                         for (IPlayer player : playerManager.getOnlinePlayers()) {
                             player.getPlayer().playSound(player.getPlayer(), Sound.BLOCK_END_PORTAL_SPAWN, 1f, 0.75f);
                         }
+                        playerManager.getHunters().forEach(IHunter::giveCompass);
 
                         send("§c§lHunters are free!");
                     }

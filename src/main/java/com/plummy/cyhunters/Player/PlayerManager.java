@@ -62,7 +62,7 @@ public class PlayerManager implements IPlayerManager {
 
     @Override
     public int size() {
-        return getPlayers().size();
+        return getActivePlayers().size();
     }
 
     @Override

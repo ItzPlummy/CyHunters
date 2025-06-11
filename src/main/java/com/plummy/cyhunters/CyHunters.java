@@ -8,6 +8,7 @@ import com.plummy.cyhunters.Game.GameBoard;
 import com.plummy.cyhunters.Game.ItemManager;
 import com.plummy.cyhunters.Game.LocationFinder;
 import com.plummy.cyhunters.Iterfaces.IGame;
+import com.plummy.cyhunters.Iterfaces.IHunter;
 import com.plummy.cyhunters.Listeners.CameraListener;
 import com.plummy.cyhunters.Listeners.PlayerListener;
 import com.plummy.cyhunters.Listeners.PrepareListener;
@@ -78,7 +79,10 @@ public final class CyHunters extends JavaPlugin {
 
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(instance, () -> {
             mainGame.getCameraManager().rotateCameras();
-            ItemManager.updateCompasses();
+
+            for (IHunter hunter : mainGame.getPlayerManager().getHunters()) {
+                hunter.updateCompass();
+            }
         }, 0L, 1L);
     }
 

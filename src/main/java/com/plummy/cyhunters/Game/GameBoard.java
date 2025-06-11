@@ -2,6 +2,7 @@ package com.plummy.cyhunters.Game;
 
 import com.plummy.cyhunters.Iterfaces.IGameBoard;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
 
 import java.time.LocalTime;
@@ -80,7 +81,7 @@ public class GameBoard implements IGameBoard {
 
         board.add("§f--------------------");
         board.add("§f");
-        board.add("§dPlayers: §e" + Bukkit.getOnlinePlayers().size());
+        board.add("§dPlayers: §e" + getMainGame().getPlayerManager().size());
         board.add("§f§f");
         board.add("§dTime in game: §b" + formatter.format(localTime));
         board.add("§f§f§f");

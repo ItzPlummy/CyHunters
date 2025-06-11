@@ -33,7 +33,7 @@ public interface IPlayerManager {
 
     void leavePlayer(UUID uuid);
 
-    void syncPlayers(boolean hasStarted);
+    void syncPlayers();
 
     void ready(Location location);
 }

@@ -2,7 +2,6 @@ package com.plummy.cyhunters.Listeners;
 
 import com.plummy.cyhunters.Enums.GameEndingReason;
 import com.plummy.cyhunters.Iterfaces.IHunter;
-import com.plummy.cyhunters.Player.Hunter;
 import com.plummy.cyhunters.Player.Spectator;
 import com.plummy.cyhunters.Player.Speedrunner;
 import org.bukkit.Bukkit;
@@ -12,6 +11,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import static com.plummy.cyhunters.CyHunters.getInstance;
@@ -82,11 +83,16 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        if (!(getMainGame().getPlayerManager().getPlayer(e.getEntity().getUniqueId()) instanceof Speedrunner player)) {
+        if (!(getMainGame().getPlayerManager().getPlayer(e.getEntity().getUniqueId()) instanceof Speedrunner)) {
             return;
         }
 
-        Bukkit.getScheduler().runTaskLater(getInstance(), () -> getMainGame().stop(GameEndingReason.HUNTER_WINS, null), 20L);
+        getMainGame().getScheduler().addRunnable(new BukkitRunnable() {
+            @Override
+            public void run() {
+                getMainGame().stop(GameEndingReason.HUNTER_WINS, null);
+            }
+        }, 1L, false);
     }
 
     @EventHandler
@@ -99,7 +105,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        player.setSpectating();
+        Bukkit.getScheduler().runTaskLater(getInstance(), player::setSpectating, 1L);
 
         getMainGame().getScheduler().addRunnable(new BukkitRunnable() {
             @Override

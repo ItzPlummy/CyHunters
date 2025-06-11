@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
+import static com.plummy.cyhunters.CyHunters.logger;
+
 public class PlayerManager implements IPlayerManager {
     private final Map<UUID, IPlayer> players;
 
@@ -65,7 +67,7 @@ public class PlayerManager implements IPlayerManager {
 
     @Override
     public void setPlayers(List<Player> players) {
-        this.players.clear();
+        resetPlayers();
         speedrunnerUUID = players.get((int) (Math.random() * players.size())).getUniqueId();
 
         for (Player player : players) {
@@ -110,7 +112,7 @@ public class PlayerManager implements IPlayerManager {
     }
 
     @Override
-    public void syncPlayers(boolean hasStarted) {
+    public void syncPlayers() {
         List<Player> onlinePlayers = new ArrayList<>(Bukkit.getOnlinePlayers());
         List<UUID> onlineUUIDs = onlinePlayers.stream().map(Player::getUniqueId).toList();
 
@@ -135,6 +137,8 @@ public class PlayerManager implements IPlayerManager {
     public void ready(Location location) {
         double distance = 3;
         double angle = 0;
+
+        Objects.requireNonNull(location.getWorld()).setSpawnLocation(location);
 
         for (IHunter hunter : getHunters()) {
             double x = location.getX() + distance * Math.cos(angle);

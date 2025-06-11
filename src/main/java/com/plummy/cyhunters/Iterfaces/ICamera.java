@@ -1,14 +1,24 @@
 package com.plummy.cyhunters.Iterfaces;
 
-import org.bukkit.Location;
-
+import java.util.List;
 import java.util.UUID;
 
 public interface ICamera {
     UUID getUUID();
-    ICameraSelector getCameraSelector();
-    void setCameraSelector(ICameraSelector cameraSelector);
-    void setLocation(Location location);
+
+    UUID getTarget();
+
+    IPlayer getTargetPlayer();
+
+    void setTargets(List<UUID> targets);
+
+    boolean isAttached();
+
+    void attach();
+
+    void detach();
+
     void updateLocation();
+
     void rotate(float degrees);
 }

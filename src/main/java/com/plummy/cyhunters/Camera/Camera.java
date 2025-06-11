@@ -1,25 +1,31 @@
 package com.plummy.cyhunters.Camera;
 
 import com.plummy.cyhunters.Iterfaces.ICamera;
-import com.plummy.cyhunters.Iterfaces.ICameraSelector;
 import com.plummy.cyhunters.Iterfaces.IHunter;
+import com.plummy.cyhunters.Iterfaces.IPlayer;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+
+import static com.plummy.cyhunters.CyHunters.getMainGame;
 
 public class Camera implements ICamera {
     private final IHunter player;
-    private ICameraSelector cameraSelector;
-    private Location location;
+    private final List<UUID> targets;
+    private int targetIndex;
 
+    private boolean isAttached;
     private float yaw;
 
     public Camera(IHunter player) {
         this.player = player;
-        this.cameraSelector = null;
-        this.location = null;
+        this.targets = new ArrayList<>();
+        this.targetIndex = 0;
 
+        this.isAttached = false;
         this.yaw = 30;
     }
 
@@ -29,33 +35,76 @@ public class Camera implements ICamera {
     }
 
     @Override
-    public ICameraSelector getCameraSelector() {
-        return cameraSelector;
+    public UUID getTarget() {
+        return targets.get(targetIndex);
     }
 
     @Override
-    public void setCameraSelector(ICameraSelector cameraSelector) {
-        this.cameraSelector = cameraSelector;
+    public IPlayer getTargetPlayer() {
+        return getMainGame().getPlayerManager().getPlayer(getTarget());
     }
 
     @Override
-    public void setLocation(Location location) {
-        if (!player.isOnline() || !player.isSpectating()) {
+    public void setTargets(List<UUID> targets) {
+        this.targets.clear();
+        this.targets.addAll(targets);
+    }
+
+    @Override
+    public boolean isAttached() {
+        return isAttached;
+    }
+
+    @Override
+    public void attach() {
+        detach();
+
+        int prevTargetIndex = targetIndex;
+        boolean foundTarget = false;
+
+        do {
+            targetIndex = (targetIndex + 1) % targets.size();
+
+            IPlayer target = getTargetPlayer();
+
+            if (!target.isOnline()) {
+                continue;
+            }
+            if (!(target instanceof IHunter hunter)) {
+                continue;
+            }
+            if (hunter.isSpectating()) {
+                continue;
+            }
+
+            foundTarget = true;
+            break;
+        } while (targetIndex != prevTargetIndex);
+
+        if (targetIndex == prevTargetIndex && !foundTarget) {
             return;
         }
 
-        this.location = location;
+        isAttached = true;
+        getMainGame().getCameraManager().updateCameras(getTarget());
+    }
 
-        updateLocation();
+    @Override
+    public void detach() {
+        isAttached = false;
     }
 
     @Override
     public void updateLocation() {
+        if (!player.isOnline() || !player.isSpectating() || !isAttached()) {
+            return;
+        }
+
         float piYaw = yaw * (float) Math.PI / 180;
         float piPitch = 5 * (float) Math.PI / 180;
 
         Vector offset = new Vector(Math.sin(piYaw) * Math.cos(piPitch), Math.sin(piPitch), -Math.cos(piYaw) * Math.cos(piPitch));
-        Location calculatedLocation = this.location.clone().add(0, 0.5, 0).add(offset.multiply(2));
+        Location calculatedLocation = getTargetPlayer().getPlayer().getLocation().add(0, 0.5, 0).add(offset.multiply(2));
 
         calculatedLocation.setYaw(yaw);
         calculatedLocation.setPitch(5);
@@ -65,11 +114,6 @@ public class Camera implements ICamera {
 
     @Override
     public void rotate(float degrees) {
-        if (!player.isOnline() || !player.isSpectating()) {
-            return;
-        }
-
         yaw += degrees;
-        updateLocation();
     }
 }

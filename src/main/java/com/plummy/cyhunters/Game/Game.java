@@ -81,19 +81,27 @@ public class Game implements IGame {
     @Override
     public void sync() {
         Bukkit.getScheduler().runTaskLater(getInstance(), () -> {
-            playerManager.syncPlayers(hasStarted());
+            if (hasStarted()) {
+                playerManager.syncPlayers();
+            }
+
             gameBoard.updateBoard();
         }, 1L);
     }
 
     @Override
-    public void start(IPlayer startPlayer) {
+    public void start(Player startPlayer) {
         if (hasStarted()) {
             return;
         }
 
+        List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
+        Collections.shuffle(players);
+        playerManager.setPlayers(players);
+        cameraManager.setupCameras();
+
         state = GameState.LOCATING;
-        send("§aGame has been started by " + startPlayer.getPlayer().getName() + ".");
+        send("§aGame has been started by " + startPlayer.getName() + ".");
         send("§aSearching for a suitable location...");
 
         Bukkit.getScheduler().runTaskAsynchronously(getInstance(), () -> {
@@ -102,20 +110,20 @@ public class Game implements IGame {
             Bukkit.getScheduler().runTask(getInstance(), () -> {
                 if (location == null) {
                     send("§cUnable to find a suitable location to start the game. Please try again.");
+
+                    playerManager.resetPlayers();
+                    cameraManager.resetCameras();
+                    sync();
+
                     return;
                 }
 
                 state = GameState.PREPARE;
-
-                List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
-                Collections.shuffle(players);
-                playerManager.setPlayers(players);
                 playerManager.ready(location);
                 sync();
 
                 Objects.requireNonNull(location.getWorld()).setGameRule(GameRule.KEEP_INVENTORY, false);
                 Objects.requireNonNull(location.getWorld()).setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
-                cameraManager.setupPlayers(playerManager.getHunters());
 
                 for (IPlayer player : playerManager.getOnlinePlayers()) {
                     player.getPlayer().sendTitle("§b§lCy§d§lHunters", "§3Let the fun §5Begin§3!", 0, 40, 0);
@@ -137,6 +145,7 @@ public class Game implements IGame {
 
                 Bukkit.getScheduler().runTaskLater(getInstance(), () -> {
                     state = GameState.HANDICAP;
+                    scheduler.start();
 
                     for (IPlayer player : playerManager.getOnlinePlayers()) {
                         player.getPlayer().sendTitle("§b§lLets §d§lGo!", "", 0, 40, 60);
@@ -148,7 +157,7 @@ public class Game implements IGame {
         });
     }
 
-    public void stop(GameEndingReason reason, IPlayer stopPlayer) {
+    public void stop(GameEndingReason reason, Player stopPlayer) {
         if (!hasStarted()) {
             return;
         }
@@ -161,7 +170,7 @@ public class Game implements IGame {
         switch (reason) {
             case SPEEDRUNNER_WINS -> {
                 title = "§c§lGame Over";
-                subtitle = "§c" + stopPlayer.getPlayer().getName() + " won!";
+                subtitle = "§c" + stopPlayer.getName() + " won!";
             }
             case HUNTER_WINS -> {
                 title = "§c§lGame Over";
@@ -169,24 +178,24 @@ public class Game implements IGame {
             }
             case COMMAND -> {
                 title = "§c§lGame Stopped";
-                subtitle = "§cBy " + stopPlayer.getPlayer().getName();
+                subtitle = "§cBy " + stopPlayer.getName();
             }
         }
-
-        playerManager.resetPlayers();
-        scheduler.stop();
-        cameraManager.resetPlayers();
-        sync();
 
         for (IPlayer player : playerManager.getOnlinePlayers()) {
             player.getPlayer().sendTitle(title, subtitle, 40, 40, 60);
             player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_ENDER_DRAGON_DEATH, 1f, 1f);
         }
+
+        playerManager.resetPlayers();
+        scheduler.stop();
+        cameraManager.resetCameras();
+        sync();
     }
 
     public void send(String message) {
-        for (IPlayer gamePlayer : playerManager.getOnlinePlayers()) {
-            gamePlayer.getPlayer().sendMessage(message);
+        for (IPlayer player : playerManager.getOnlinePlayers()) {
+            player.getPlayer().sendMessage(message);
         }
     }
 }

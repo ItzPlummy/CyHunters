@@ -6,6 +6,4 @@ public interface IScheduler {
     void stop();
 
     void addRunnable(Runnable runnable, Long delay, boolean isAsync);
-
-    void addStopRunnable(Runnable runnable, Long delay, boolean isAsync);
 }

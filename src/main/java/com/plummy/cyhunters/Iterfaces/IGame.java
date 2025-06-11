@@ -27,7 +27,7 @@ public interface IGame {
 
     void sync();
 
-    void start(IPlayer startPlayer);
+    void start(Player startPlayer);
 
-    void stop(GameEndingReason reason, IPlayer player);
+    void stop(GameEndingReason reason, Player player);
 }

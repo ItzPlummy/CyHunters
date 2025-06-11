@@ -30,7 +30,7 @@ public final class CyHunters extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        logger.info("Enabling CyHunters...");
+        logger.info("Enabling Plugin...");
 
         if (!getDataFolder().exists()) {
             logger().info("Creating plugin folder...");
@@ -64,22 +64,27 @@ public final class CyHunters extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new CameraListener(), instance);
         logger.info("Listeners registered!");
 
-        logger.info("CyHunters Enabled!");
+        logger.info("Plugin Enabled!");
 
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(instance, () -> {
             mainGame.getGameBoard().updateBoard();
         }, 0L, 10L);
 
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(instance, () -> {
-            mainGame.getCameraManager().rotateAllCameras();
+            mainGame.getCameraManager().rotateCameras();
         }, 0L, 1L);
     }
 
     @Override
     public void onDisable() {
-        logger().info("Disabling CyHunters...");
+        logger().info("Disabling Plugin...");
 
-        logger().info("CyHunters Disabled!");
+        logger().info("Disabling Schedulers...");
+        Bukkit.getScheduler().cancelTasks(instance);
+        getMainGame().getScheduler().stop();
+        logger().info("Schedulers Disabled!");
+
+        logger().info("Plugin Disabled!");
     }
 
     public static CyHunters getInstance() {

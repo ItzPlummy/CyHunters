@@ -7,88 +7,51 @@ import com.plummy.cyhunters.Iterfaces.IPlayer;
 
 import java.util.*;
 
+import static com.plummy.cyhunters.CyHunters.getMainGame;
+
 public class CameraManager implements ICameraManager {
-    private final Map<UUID, List<ICamera>> cameras;
-    private final Map<UUID, IHunter> players;
+    private final List<ICamera> cameras;
 
     public CameraManager() {
-        this.cameras = new HashMap<>();
-        this.players = new HashMap<>();
+        this.cameras = new ArrayList<>();
     }
 
     @Override
-    public void setupPlayers(List<IHunter> players) {
-        resetPlayers();
+    public void setupCameras() {
+        this.resetCameras();
 
-        for (IHunter player : players) {
-            addPlayer(player);
+        List<UUID> targets = new ArrayList<>(getMainGame().getPlayerManager().getActivePlayers().stream().map(IPlayer::getUUID).toList());
 
-            List<UUID> targets = new ArrayList<>();
-            for (IPlayer target : players) {
-                targets.add(target.getPlayer().getUniqueId());
-            }
-
-            player.getCameraSelector().setTargets(targets);
+        for (IHunter hunter : getMainGame().getPlayerManager().getHunters()) {
+            cameras.add(hunter.getCamera());
+            hunter.getCamera().setTargets(targets);
         }
     }
 
     @Override
-    public void resetPlayers() {
+    public void resetCameras() {
         cameras.clear();
-        players.clear();
     }
 
     @Override
-    public void addPlayer(IHunter player) {
-        cameras.putIfAbsent(player.getPlayer().getUniqueId(), new ArrayList<>());
-        players.putIfAbsent(player.getPlayer().getUniqueId(), player);
-    }
-
-    @Override
-    public void attachCamera(UUID uuid, ICamera camera) {
-        cameras.get(uuid).add(camera);
-    }
-
-    @Override
-    public void detachCamera(UUID uuid, UUID cameraUUID) {
-        ICamera camera = cameras.get(uuid).stream().filter(c -> c.getUUID().equals(cameraUUID)).findFirst().orElse(null);
-
-        if (camera == null) {
-            return;
+    public void detachCameras(UUID uuid) {
+        for (ICamera camera : cameras.stream().filter(c -> c.getTarget().equals(uuid)).toList()) {
+            camera.attach();
         }
-
-        camera.getCameraSelector().attachCamera();
-        cameras.get(uuid).removeIf(c -> c.getUUID().equals(cameraUUID));
-    }
-
-    @Override
-    public void detachAllCameras(UUID uuid) {
-        for (ICamera camera : cameras.get(uuid)) {
-            camera.getCameraSelector().attachCamera();
-        }
-
-        cameras.get(uuid).clear();
     }
 
     @Override
     public void updateCameras(UUID uuid) {
-        List<ICamera> cameraList = cameras.get(uuid);
-
-        if (cameraList == null) {
-            return;
-        }
-
-        for (ICamera camera : cameras.get(uuid)) {
-            camera.setLocation(players.get(uuid).getPlayer().getLocation().clone());
+        for (ICamera camera : cameras.stream().filter(c -> c.getTarget().equals(uuid)).toList()) {
+            camera.updateLocation();
         }
     }
 
     @Override
-    public void rotateAllCameras() {
-        for (UUID uuid : cameras.keySet()) {
-            for (ICamera camera : cameras.get(uuid)) {
-                camera.rotate(1);
-            }
+    public void rotateCameras() {
+        for (ICamera camera : cameras) {
+            camera.rotate(1);
+            camera.updateLocation();
         }
     }
 }

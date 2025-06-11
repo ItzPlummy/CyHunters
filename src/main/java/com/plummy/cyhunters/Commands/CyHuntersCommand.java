@@ -34,18 +34,20 @@ public class CyHuntersCommand implements CommandExecutor {
 
     private void onGameStart(Player player) {
         if (getMainGame().hasStarted()) {
-            player.sendMessage("§cError: Game has already started");
+            player.sendMessage("§cError: Game has already been started");
+            return;
         }
 
-        getMainGame().start(getMainGame().getPlayerManager().getPlayer(player.getUniqueId()));
+        getMainGame().start(player);
     }
 
     private void onGameStop(Player player) {
-        if (getMainGame().hasStarted()) {
-            player.sendMessage("§cError: Game has not been started");
+        if (!getMainGame().hasStarted()) {
+            player.sendMessage("§cError: Game has not yet started");
+            return;
         }
 
-        getMainGame().stop(GameEndingReason.COMMAND, getMainGame().getPlayerManager().getPlayer(player.getUniqueId()));
+        getMainGame().stop(GameEndingReason.COMMAND, player);
     }
 
     private void sendHelp(Player player) {

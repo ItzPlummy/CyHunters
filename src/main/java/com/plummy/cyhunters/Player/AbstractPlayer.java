@@ -37,7 +37,7 @@ public abstract class AbstractPlayer implements IPlayer {
 
     @Override
     public boolean isOnline() {
-        return player == null;
+        return player != null;
     }
 
     protected PlayerState getState() {
@@ -49,6 +49,10 @@ public abstract class AbstractPlayer implements IPlayer {
     }
 
     protected void reset() {
+        if (!isOnline()) {
+            return;
+        }
+
         Player player = getPlayer();
 
         player.getInventory().clear();
@@ -67,6 +71,7 @@ public abstract class AbstractPlayer implements IPlayer {
             player.removePotionEffect(effect.getType());
         }
 
+        getPlayer().setRespawnLocation(null, true);
         player.setGameMode(GameMode.SURVIVAL);
     }
 }

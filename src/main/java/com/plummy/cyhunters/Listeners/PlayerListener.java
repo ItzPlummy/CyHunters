@@ -2,17 +2,21 @@ package com.plummy.cyhunters.Listeners;
 
 import com.plummy.cyhunters.Enums.GameEndingReason;
 import com.plummy.cyhunters.Iterfaces.IHunter;
+import com.plummy.cyhunters.Iterfaces.ISpeedrunner;
+import com.plummy.cyhunters.Player.Hunter;
 import com.plummy.cyhunters.Player.Spectator;
 import com.plummy.cyhunters.Player.Speedrunner;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import static com.plummy.cyhunters.CyHunters.getInstance;
@@ -64,16 +68,22 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent e) {
-        if (!getMainGame().preparing()) {
-            return;
-        }
+        if (getMainGame().preparing()) {
+            if (getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId()) instanceof Spectator) {
+                return;
+            }
 
-        if (getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId()) instanceof Spectator) {
-            return;
-        }
+            if (e.getTo() == null || !(e.getFrom().getX() == e.getTo().getX() && e.getFrom().getZ() == e.getTo().getZ())) {
+                e.setCancelled(true);
+            }
+        } else if (getMainGame().handicap()) {
+            if (!(getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId()) instanceof Hunter)) {
+                return;
+            }
 
-        if (e.getTo() == null || !(e.getFrom().getX() == e.getTo().getX() && e.getFrom().getZ() == e.getTo().getZ())) {
-            e.setCancelled(true);
+            if (e.getTo() == null || !(e.getFrom().getX() == e.getTo().getX() && e.getFrom().getZ() == e.getTo().getZ())) {
+                e.setCancelled(true);
+            }
         }
     }
 
@@ -87,12 +97,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        getMainGame().getScheduler().addRunnable(new BukkitRunnable() {
-            @Override
-            public void run() {
-                getMainGame().stop(GameEndingReason.HUNTER_WINS, null);
-            }
-        }, 1L, false);
+        Bukkit.getScheduler().runTaskLater(getInstance(), () -> getMainGame().stop(GameEndingReason.HUNTER_WINS, null), 20L);
     }
 
     @EventHandler
@@ -112,6 +117,42 @@ public class PlayerListener implements Listener {
             public void run() {
                 player.setPlaying();
             }
-        }, 10L, false);
+        }, 30L, false);
+
+        for (long index = 1; index <= 30; index++) {
+            long finalIndex = index;
+
+            getMainGame().getScheduler().addRunnable(new BukkitRunnable() {
+                @Override
+                public void run() {
+                    String text = finalIndex == 30 ? "§f" : "§cRespawn in " + (30 - finalIndex);
+
+                    player.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(text));
+                }
+            }, index, true);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerKillDragon(EntityDeathEvent e) {
+        if (!(e.getEntity() instanceof EnderDragon)) {
+            return;
+        }
+
+        if (!getMainGame().hasStarted()) {
+            return;
+        }
+
+        Player player = e.getEntity().getKiller();
+
+        if (player == null) {
+            return;
+        }
+
+        if (!(getMainGame().getPlayerManager().getPlayer(player.getUniqueId()) instanceof ISpeedrunner)) {
+            return;
+        }
+
+        Bukkit.getScheduler().runTaskLater(getInstance(), () -> getMainGame().stop(GameEndingReason.SPEEDRUNNER_WINS, player), 20L);
     }
 }

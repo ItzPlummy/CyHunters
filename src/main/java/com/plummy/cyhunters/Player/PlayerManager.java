@@ -7,8 +7,6 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
-import static com.plummy.cyhunters.CyHunters.logger;
-
 public class PlayerManager implements IPlayerManager {
     private final Map<UUID, IPlayer> players;
 

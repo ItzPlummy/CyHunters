@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import java.util.UUID;
 
 import static com.plummy.cyhunters.CyHunters.getInstance;
+import static com.plummy.cyhunters.CyHunters.getMainGame;
 
 public record ScheduledTask(UUID uuid, Runnable runnable, Long delay, boolean isAsync) implements IScheduledTask {
     @Override
@@ -14,8 +15,8 @@ public record ScheduledTask(UUID uuid, Runnable runnable, Long delay, boolean is
     }
 
     @Override
-    public boolean canRun(Long tick) {
-        return tick >= delay;
+    public boolean canRun() {
+        return getMainGame().getScheduler().getTick() >= delay;
     }
 
     @Override

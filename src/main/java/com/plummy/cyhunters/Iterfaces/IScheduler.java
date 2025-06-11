@@ -1,6 +1,8 @@
 package com.plummy.cyhunters.Iterfaces;
 
 public interface IScheduler {
+    Long getTick();
+
     void start();
 
     void stop();

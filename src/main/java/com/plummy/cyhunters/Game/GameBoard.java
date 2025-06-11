@@ -4,6 +4,8 @@ import com.plummy.cyhunters.Iterfaces.IGameBoard;
 import org.bukkit.Bukkit;
 import org.bukkit.scoreboard.*;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +14,7 @@ import static com.plummy.cyhunters.CyHunters.logger;
 
 public class GameBoard implements IGameBoard {
     private static final String OBJECTIVE_NAME = "cyhunters";
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     private Scoreboard scoreboard = null;
     private Objective objective = null;
@@ -54,17 +57,33 @@ public class GameBoard implements IGameBoard {
         }
 
         for (int index = 0; index < board.size(); index++) {
-            objective.getScore(board.get(index)).setScore(index);
+            objective.getScore(board.get(index)).setScore(board.size() - index - 1);
         }
 
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
     }
 
     private void setPreGameBoard() {
-        board.add("Players: " + Bukkit.getOnlinePlayers().size());
+        board.add("§f---------------");
+        board.add("§f");
+        board.add("§dPlayers: §e" + Bukkit.getOnlinePlayers().size());
+        board.add("§f§f");
+        board.add("§f§f---------------");
     }
 
     private void setInGameBoard() {
-        board.add("Players: " + getMainGame().getPlayerManager().size());
+        long hours = getMainGame().getScheduler().getTick() / 3600L;
+        long minutes = getMainGame().getScheduler().getTick() / 60L;
+        long seconds = getMainGame().getScheduler().getTick() % 60L;
+
+        LocalTime localTime = LocalTime.of((int) hours, (int) minutes, (int) seconds);
+
+        board.add("§f--------------------");
+        board.add("§f");
+        board.add("§dPlayers: §e" + Bukkit.getOnlinePlayers().size());
+        board.add("§f§f");
+        board.add("§dTime in game: §b" + formatter.format(localTime));
+        board.add("§f§f§f");
+        board.add("§f§f--------------------");
     }
 }

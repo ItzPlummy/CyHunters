@@ -2,11 +2,15 @@ package com.plummy.cyhunters.Player;
 
 import com.plummy.cyhunters.Enums.PlayerState;
 import com.plummy.cyhunters.Iterfaces.IPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.advancement.Advancement;
+import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.Vector;
 
+import java.util.Iterator;
 import java.util.UUID;
 
 public abstract class AbstractPlayer implements IPlayer {
@@ -69,6 +73,14 @@ public abstract class AbstractPlayer implements IPlayer {
 
         for (PotionEffect effect : player.getActivePotionEffects()) {
             player.removePotionEffect(effect.getType());
+        }
+
+        Iterator<Advancement> advancements = Bukkit.getServer().advancementIterator();
+        while (advancements.hasNext()) {
+            AdvancementProgress progress = player.getAdvancementProgress(advancements.next());
+            for (String criteria : progress.getAwardedCriteria()) {
+                progress.revokeCriteria(criteria);
+            }
         }
 
         getPlayer().setRespawnLocation(null, true);

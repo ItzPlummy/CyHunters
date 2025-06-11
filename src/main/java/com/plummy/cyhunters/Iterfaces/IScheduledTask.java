@@ -4,6 +4,6 @@ import java.util.UUID;
 
 public interface IScheduledTask {
     UUID getUUID();
-    boolean canRun(Long tick);
+    boolean canRun();
     void run();
 }

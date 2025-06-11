@@ -28,6 +28,11 @@ public class GameScheduler implements IScheduler {
     }
 
     @Override
+    public Long getTick() {
+        return tick;
+    }
+
+    @Override
     public void start() {
         if (isRunning) {
             return;
@@ -45,7 +50,7 @@ public class GameScheduler implements IScheduler {
                 ArrayList<UUID> toRemove = new ArrayList<>();
 
                 for (IScheduledTask task : tasks.values()) {
-                    if (!task.canRun(tick)) {
+                    if (!task.canRun()) {
                         continue;
                     }
 

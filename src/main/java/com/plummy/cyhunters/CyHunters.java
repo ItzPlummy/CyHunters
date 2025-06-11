@@ -1,17 +1,19 @@
 package com.plummy.cyhunters;
 
-import com.plummy.cyhunters.Scheduler.GameScheduler;
-import com.plummy.cyhunters.Iterfaces.IGame;
 import com.plummy.cyhunters.Camera.CameraManager;
 import com.plummy.cyhunters.Commands.CyHuntersCommand;
 import com.plummy.cyhunters.Commands.CyHuntersCompleter;
 import com.plummy.cyhunters.Game.Game;
 import com.plummy.cyhunters.Game.GameBoard;
+import com.plummy.cyhunters.Game.ItemManager;
 import com.plummy.cyhunters.Game.LocationFinder;
+import com.plummy.cyhunters.Iterfaces.IGame;
 import com.plummy.cyhunters.Listeners.CameraListener;
 import com.plummy.cyhunters.Listeners.PlayerListener;
 import com.plummy.cyhunters.Player.PlayerManager;
+import com.plummy.cyhunters.Scheduler.GameScheduler;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
@@ -20,6 +22,7 @@ import java.util.logging.Logger;
 public final class CyHunters extends JavaPlugin {
     private static CyHunters instance;
     private static IGame mainGame;
+    private static NamespacedKey namespacedKey = NamespacedKey.fromString("cyhunters");
     private static Logger logger;
 
     {
@@ -72,6 +75,7 @@ public final class CyHunters extends JavaPlugin {
 
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(instance, () -> {
             mainGame.getCameraManager().rotateCameras();
+            ItemManager.updateCompasses();
         }, 0L, 1L);
     }
 
@@ -93,6 +97,10 @@ public final class CyHunters extends JavaPlugin {
 
     public static IGame getMainGame() {
         return mainGame;
+    }
+
+    public static NamespacedKey getNamespacedKey() {
+        return namespacedKey;
     }
 
     public static Logger logger() {

@@ -1,19 +1,13 @@
 package com.plummy.cyhunters;
 
-import com.plummy.cyhunters.Camera.CameraManager;
 import com.plummy.cyhunters.Commands.CyHuntersCommand;
 import com.plummy.cyhunters.Commands.CyHuntersCompleter;
-import com.plummy.cyhunters.Game.Game;
-import com.plummy.cyhunters.Game.GameBoard;
-import com.plummy.cyhunters.Game.ItemManager;
-import com.plummy.cyhunters.Game.LocationFinder;
+import com.plummy.cyhunters.Game.GameFactory;
 import com.plummy.cyhunters.Iterfaces.IGame;
 import com.plummy.cyhunters.Iterfaces.IHunter;
 import com.plummy.cyhunters.Listeners.CameraListener;
 import com.plummy.cyhunters.Listeners.PlayerListener;
 import com.plummy.cyhunters.Listeners.PrepareListener;
-import com.plummy.cyhunters.Player.PlayerManager;
-import com.plummy.cyhunters.Scheduler.GameScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -25,8 +19,10 @@ public final class CyHunters extends JavaPlugin {
     private static final NamespacedKey namespacedKey = Objects.requireNonNull(NamespacedKey.fromString("cyhunters"));
 
     private static CyHunters instance;
-    private static IGame mainGame;
+    private static GameFactory gameFactory;
     private static Logger logger;
+
+    private static IGame mainGame;
 
     {
         logger = getLogger();
@@ -35,6 +31,7 @@ public final class CyHunters extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        gameFactory = new GameFactory();
 
         logger.info("Enabling Plugin...");
 
@@ -50,13 +47,7 @@ public final class CyHunters extends JavaPlugin {
         reloadConfig();
 
         logger.info("Creating and syncing game...");
-        mainGame = new Game(
-                new PlayerManager(),
-                new GameScheduler(),
-                new GameBoard(),
-                new LocationFinder(),
-                new CameraManager()
-        );
+        mainGame = gameFactory.createGame();
         mainGame.sync();
         logger.info("Game synced!");
 
@@ -100,6 +91,10 @@ public final class CyHunters extends JavaPlugin {
 
     public static CyHunters getInstance() {
         return instance;
+    }
+
+    public static GameFactory getGameFactory() {
+        return gameFactory;
     }
 
     public static IGame getMainGame() {

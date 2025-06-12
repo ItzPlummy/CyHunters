@@ -2,7 +2,7 @@ package com.plummy.cyhunters.Enums;
 
 import java.util.Objects;
 
-import static com.plummy.cyhunters.CyHunters.getInstance;
+import static com.plummy.cyhunters.CyHunters.config;
 
 public enum KitType {
     EMPTY("Empty"),
@@ -23,7 +23,7 @@ public enum KitType {
     }
 
     public static KitType getFromConfig() {
-        String kit = Objects.requireNonNull(getInstance().getConfig().getString("settings.kit"));
+        String kit = Objects.requireNonNull(config().getString("settings.kit"));
 
         return switch (kit) {
             case "basic" -> KitType.BASIC;

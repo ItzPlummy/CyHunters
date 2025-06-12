@@ -2,7 +2,7 @@ package com.plummy.cyhunters.Enums;
 
 import java.util.Objects;
 
-import static com.plummy.cyhunters.CyHunters.getInstance;
+import static com.plummy.cyhunters.CyHunters.config;
 
 public enum GameDimension {
     OVERWORLD("Overworld"),
@@ -19,7 +19,7 @@ public enum GameDimension {
     }
 
     public static GameDimension getFromConfig() {
-        String dimension = Objects.requireNonNull(getInstance().getConfig().getString("settings.dimension"));
+        String dimension = Objects.requireNonNull(config().getString("settings.dimension"));
 
         if (dimension.equals("nether")) {
             return NETHER;

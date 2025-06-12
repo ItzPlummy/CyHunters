@@ -11,7 +11,7 @@ import org.bukkit.util.StructureSearchResult;
 import java.util.List;
 import java.util.Random;
 
-import static com.plummy.cyhunters.CyHunters.getInstance;
+import static com.plummy.cyhunters.CyHunters.config;
 
 public class OverworldLocationFinder implements ILocationFinder {
     private static final List<Structure> searchStructures = List.of(
@@ -35,9 +35,9 @@ public class OverworldLocationFinder implements ILocationFinder {
     public Location findLocation(World world) {
         Location structureLocation;
 
-        int minDistance = getInstance().getConfig().getInt("parameters.spawn.min-offset-distance");
-        int maxDistance = getInstance().getConfig().getInt("parameters.spawn.max-offset-distance");
-        int minHeight = getInstance().getConfig().getInt("parameters.spawn.min-height");
+        int minDistance = config().getInt("parameters.spawn.min-offset-distance");
+        int maxDistance = config().getInt("parameters.spawn.max-offset-distance");
+        int minHeight = config().getInt("parameters.spawn.min-height");
 
         for (int i = 0; i < 5; i++) {
             structureLocation = findStructureLocation(world);
@@ -67,8 +67,8 @@ public class OverworldLocationFinder implements ILocationFinder {
     }
 
     private Location findStructureLocation(World world) {
-        int searchRadius = getInstance().getConfig().getInt("parameters.spawn.location-search-radius");
-        int structureOffset = getInstance().getConfig().getInt("parameters.spawn.structure-offset");
+        int searchRadius = config().getInt("parameters.spawn.location-search-radius");
+        int structureOffset = config().getInt("parameters.spawn.structure-offset");
 
         Location randomLocation = new Location(world, random.nextInt(-searchRadius, searchRadius), 0, random.nextInt(-searchRadius, searchRadius));
 

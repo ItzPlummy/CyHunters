@@ -1,7 +1,6 @@
 package com.plummy.cyhunters.Iterfaces;
 
 import com.plummy.cyhunters.Enums.GameEndingReason;
-import com.plummy.cyhunters.Enums.GameStyle;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;

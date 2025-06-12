@@ -104,7 +104,7 @@ public class CyHuntersCommand implements CommandExecutor {
     }
 
     private void onSettingChange(String setting, String value) {
-        getInstance().getConfig().set("settings." + setting, value);
+        config().set("settings." + setting, value);
         getInstance().saveConfig();
         getInstance().reloadConfig();
 

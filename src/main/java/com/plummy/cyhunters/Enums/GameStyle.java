@@ -2,7 +2,7 @@ package com.plummy.cyhunters.Enums;
 
 import java.util.Objects;
 
-import static com.plummy.cyhunters.CyHunters.getInstance;
+import static com.plummy.cyhunters.CyHunters.config;
 
 public enum GameStyle {
     NORMAL("Normal"),
@@ -19,7 +19,7 @@ public enum GameStyle {
     }
 
     public static GameStyle getFromConfig() {
-        String style = Objects.requireNonNull(getInstance().getConfig().getString("settings.style"));
+        String style = Objects.requireNonNull(config().getString("settings.style"));
 
         if (style.equals("blitz")) {
             return BLITZ;

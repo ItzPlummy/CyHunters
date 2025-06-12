@@ -1,7 +1,6 @@
 package com.plummy.cyhunters.Game;
 
 import com.plummy.cyhunters.Enums.GameEndingReason;
-import com.plummy.cyhunters.Enums.GameStyle;
 import com.plummy.cyhunters.Iterfaces.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -11,6 +10,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Objects;
 
+import static com.plummy.cyhunters.CyHunters.config;
 import static com.plummy.cyhunters.CyHunters.getInstance;
 
 public class BlitzGame extends AbstractGame {
@@ -42,8 +42,8 @@ public class BlitzGame extends AbstractGame {
                 displayIntroMessage();
                 Bukkit.getScheduler().runTaskLater(getInstance(), this::displaySpeedrunnerMessage, 40L);
 
-                Long secondsToDebut = getInstance().getConfig().getLong("parameters.game.seconds-to-debut-blitz") * getPlayerManager().getHunters().size();
-                Long secondsToCompass = getInstance().getConfig().getLong("parameters.game.seconds-to-compass-blitz");
+                Long secondsToDebut = config().getLong("parameters.game.seconds-to-debut-blitz") * getPlayerManager().getHunters().size();
+                Long secondsToCompass = config().getLong("parameters.game.seconds-to-compass-blitz");
 
                 Bukkit.getScheduler().runTaskLater(getInstance(), () -> startHandicap(secondsToDebut, secondsToCompass), 80L);
             });
@@ -54,7 +54,7 @@ public class BlitzGame extends AbstractGame {
     protected void startHandicap(Long secondsToDebut, Long secondsToCompass) {
         super.startHandicap(secondsToDebut, secondsToCompass);
 
-        long secondsBeforeEnd = getInstance().getConfig().getLong("parameters.game.seconds-before-end");
+        long secondsBeforeEnd = config().getLong("parameters.game.seconds-before-end");
 
         getScheduler().addRunnable(() -> {
             send("§a3 minutes left until the Speedrunner wins!");
@@ -79,6 +79,6 @@ public class BlitzGame extends AbstractGame {
         WorldBorder border = Objects.requireNonNull(location.getWorld()).getWorldBorder();
 
         border.setCenter(location.getBlockX() + 0.5, location.getBlockZ() + 0.5);
-        border.setSize(getInstance().getConfig().getInt("parameters.game.border-size") + 1);
+        border.setSize(config().getInt("parameters.game.border-size") + 1);
     }
 }

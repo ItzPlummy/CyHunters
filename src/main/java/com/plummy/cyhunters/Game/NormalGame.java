@@ -1,6 +1,5 @@
 package com.plummy.cyhunters.Game;
 
-import com.plummy.cyhunters.Enums.GameStyle;
 import com.plummy.cyhunters.Iterfaces.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -10,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Objects;
 
+import static com.plummy.cyhunters.CyHunters.config;
 import static com.plummy.cyhunters.CyHunters.getInstance;
 
 public class NormalGame extends AbstractGame {
@@ -41,8 +41,8 @@ public class NormalGame extends AbstractGame {
                 displayIntroMessage();
                 Bukkit.getScheduler().runTaskLater(getInstance(), this::displaySpeedrunnerMessage, 40L);
 
-                Long secondsToDebut = getInstance().getConfig().getLong("parameters.game.seconds-to-debut") * getPlayerManager().getHunters().size();
-                Long secondsToCompass = getInstance().getConfig().getLong("parameters.game.seconds-to-compass");
+                Long secondsToDebut = config().getLong("parameters.game.seconds-to-debut") * getPlayerManager().getHunters().size();
+                Long secondsToCompass = config().getLong("parameters.game.seconds-to-compass");
 
                 Bukkit.getScheduler().runTaskLater(getInstance(), () -> startHandicap(secondsToDebut, secondsToCompass), 80L);
             });

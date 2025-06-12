@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.plummy.cyhunters.CyHunters.getInstance;
+import static com.plummy.cyhunters.CyHunters.config;
 import static com.plummy.cyhunters.CyHunters.getMainGame;
 
 public class Camera implements ICamera {
@@ -29,9 +29,9 @@ public class Camera implements ICamera {
         this.targetIndex = 0;
 
         this.isAttached = false;
-        this.yaw = getInstance().getConfig().getInt("parameters.camera.default-yaw");
-        this.pitch = getInstance().getConfig().getInt("parameters.camera.default-pitch");
-        this.offset = getInstance().getConfig().getInt("parameters.camera.default-offset");
+        this.yaw = config().getInt("parameters.camera.default-yaw");
+        this.pitch = config().getInt("parameters.camera.default-pitch");
+        this.offset = config().getInt("parameters.camera.default-offset");
     }
 
     @Override

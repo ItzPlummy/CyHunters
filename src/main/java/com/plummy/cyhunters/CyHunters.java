@@ -13,6 +13,7 @@ import com.plummy.cyhunters.Listeners.PlayerListener;
 import com.plummy.cyhunters.Listeners.PrepareListener;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
@@ -114,6 +115,10 @@ public final class CyHunters extends JavaPlugin {
 
     public static NamespacedKey getNamespacedKey() {
         return namespacedKey;
+    }
+
+    public static FileConfiguration config() {
+        return getInstance().getConfig();
     }
 
     public static Logger logger() {

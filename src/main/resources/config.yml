@@ -1,8 +1,8 @@
 # CyHunters 1.0 Config File
 
-#
-# Settings
-#
+#                                                                    #
+# Game settings, you cat set them using /cyhunters settings command. #
+#                                                                    #
 settings:
   # Game dimension - [ overworld, nether ]
   dimension: overworld
@@ -14,9 +14,9 @@ settings:
   kit: empty
 
 
-#
-# Parameters
-#
+#                                                                 #
+# Parameters that set clear game values. Change at your own risk. #
+#                                                                 #
 parameters:
   # Parameters of spawn location search and player distribution.
   spawn:

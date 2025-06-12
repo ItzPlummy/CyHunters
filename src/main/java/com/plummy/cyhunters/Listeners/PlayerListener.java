@@ -20,8 +20,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import static com.plummy.cyhunters.CyHunters.getInstance;
-import static com.plummy.cyhunters.CyHunters.getMainGame;
+import static com.plummy.cyhunters.CyHunters.*;
 
 public class PlayerListener implements Listener {
     @EventHandler
@@ -92,7 +91,7 @@ public class PlayerListener implements Listener {
 
         Bukkit.getScheduler().runTaskLater(getInstance(), player::setSpectating, 1L);
 
-        int respawnDelay = getInstance().getConfig().getInt("parameters.game.respawn-delay");
+        int respawnDelay = config().getInt("parameters.game.respawn-delay");
 
         getMainGame().getScheduler().addRunnable(new BukkitRunnable() {
             @Override

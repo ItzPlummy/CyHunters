@@ -11,15 +11,11 @@ import java.util.List;
 public class MaceKitCreator extends AbstractKitCreator {
     @Override
     public void createSpeedrunnerKit(Player player) {
-        setItem(player, getEnchantedItem(
-                new ItemStack(Material.DIAMOND_SWORD, 1),
-                List.of(Enchantment.SHARPNESS),
-                List.of(2)
-        ), 0);
+        setItem(player, new ItemStack(Material.DIAMOND_SWORD, 1), 0);
         setItem(player, getEnchantedItem(
                 new ItemStack(Material.MACE, 1),
                 List.of(Enchantment.DENSITY, Enchantment.WIND_BURST),
-                List.of(5, 1)
+                List.of(4, 1)
         ), 1);
         setItem(player, new ItemStack(Material.WIND_CHARGE, 64), 2);
         setItem(player, new ItemStack(Material.WIND_CHARGE, 64), 3);
@@ -52,15 +48,11 @@ public class MaceKitCreator extends AbstractKitCreator {
 
     @Override
     public void createHunterKit(Player player) {
-        setItem(player, getEnchantedItem(
-                new ItemStack(Material.IRON_SWORD, 1),
-                List.of(Enchantment.SHARPNESS),
-                List.of(2)
-        ), 0);
+        setItem(player, new ItemStack(Material.IRON_SWORD, 1), 0);
         setItem(player, getEnchantedItem(
                 new ItemStack(Material.MACE, 1),
                 List.of(Enchantment.DENSITY, Enchantment.WIND_BURST),
-                List.of(3, 1)
+                List.of(2, 1)
         ), 1);
         setItem(player, new ItemStack(Material.WIND_CHARGE, 64), 2);
         setItem(player, new ItemStack(Material.WIND_CHARGE, 64), 3);

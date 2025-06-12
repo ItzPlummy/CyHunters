@@ -24,9 +24,21 @@ public class BowKitCreator extends AbstractKitCreator {
 
         setOffHand(player, new ItemStack(Material.SHIELD, 1));
 
-        setArmor(player, new ItemStack(Material.IRON_HELMET), EquipmentSlot.HEAD);
-        setArmor(player, new ItemStack(Material.IRON_CHESTPLATE), EquipmentSlot.CHEST);
-        setArmor(player, new ItemStack(Material.IRON_BOOTS), EquipmentSlot.FEET);
+        setArmor(player, getEnchantedItem(
+                new ItemStack(Material.IRON_HELMET, 1),
+                List.of(Enchantment.PROTECTION),
+                List.of(2)
+        ), EquipmentSlot.HEAD);
+        setArmor(player, getEnchantedItem(
+                new ItemStack(Material.IRON_CHESTPLATE, 1),
+                List.of(Enchantment.PROTECTION),
+                List.of(2)
+        ), EquipmentSlot.CHEST);
+        setArmor(player, getEnchantedItem(
+                new ItemStack(Material.IRON_BOOTS, 1),
+                List.of(Enchantment.PROTECTION),
+                List.of(2)
+        ), EquipmentSlot.FEET);
     }
 
     @Override
@@ -43,7 +55,15 @@ public class BowKitCreator extends AbstractKitCreator {
 
         setOffHand(player, new ItemStack(Material.SHIELD, 1));
 
-        setArmor(player, new ItemStack(Material.LEATHER_CHESTPLATE), EquipmentSlot.CHEST);
-        setArmor(player, new ItemStack(Material.LEATHER_BOOTS), EquipmentSlot.FEET);
+        setArmor(player, getEnchantedItem(
+                new ItemStack(Material.CHAINMAIL_HELMET, 1),
+                List.of(Enchantment.PROTECTION),
+                List.of(2)
+        ), EquipmentSlot.HEAD);
+        setArmor(player, getEnchantedItem(
+                new ItemStack(Material.CHAINMAIL_CHESTPLATE, 1),
+                List.of(Enchantment.PROTECTION),
+                List.of(2)
+        ), EquipmentSlot.CHEST);
     }
 }

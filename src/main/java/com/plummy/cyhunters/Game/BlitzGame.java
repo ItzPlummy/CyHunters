@@ -1,11 +1,8 @@
 package com.plummy.cyhunters.Game;
 
-import com.plummy.cyhunters.Camera.CameraManager;
 import com.plummy.cyhunters.Enums.GameEndingReason;
 import com.plummy.cyhunters.Enums.GameStyle;
 import com.plummy.cyhunters.Iterfaces.*;
-import com.plummy.cyhunters.Player.PlayerManager;
-import com.plummy.cyhunters.Scheduler.GameScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;

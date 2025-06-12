@@ -1,9 +1,8 @@
 package com.plummy.cyhunters.KitCreator;
 
-import com.plummy.cyhunters.Iterfaces.IKitCreator;
 import org.bukkit.entity.Player;
 
-public class MaceKitCreator implements IKitCreator {
+public class MaceKitCreator extends AbstractKitCreator {
     @Override
     public void createSpeedrunnerKit(Player player) {
 

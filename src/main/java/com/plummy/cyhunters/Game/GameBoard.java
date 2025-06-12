@@ -5,7 +5,6 @@ import com.plummy.cyhunters.Enums.GameStyle;
 import com.plummy.cyhunters.Enums.KitType;
 import com.plummy.cyhunters.Iterfaces.IGameBoard;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
 
 import java.time.LocalTime;

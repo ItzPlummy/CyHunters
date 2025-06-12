@@ -4,6 +4,7 @@ import com.plummy.cyhunters.Enums.GameDimension;
 import com.plummy.cyhunters.Enums.GameEndingReason;
 import com.plummy.cyhunters.Enums.GameStyle;
 import com.plummy.cyhunters.Enums.KitType;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -32,37 +33,49 @@ public class CyHuntersCommand implements CommandExecutor {
             case "start" -> onGameStart(player);
             case "stop" -> onGameStop(player);
             case "settings" -> {
-                if (args.length < 3) {
-                    player.sendMessage("§cError: Invalid arguments for command /cyhunters settings");
+                if (args.length < 2) {
+                    player.sendMessage("§cError: Invalid argument for settings command.");
+                    player.sendMessage("§cUsage: /cyhunters settings <dimension | style | kit> <value>");
+                    player.playSound(player, Sound.ENTITY_ITEM_BREAK, 1f, 1f);
                     return true;
                 }
 
                 switch (args[1]) {
                     case "dimension" -> {
-                        if (!List.of("overworld", "nether").contains(args[2])) {
-                            player.sendMessage("§cError: Invalid arguments for command /cyhunters settings");
+                        if (args.length < 3 || !List.of("overworld", "nether").contains(args[2])) {
+                            player.sendMessage("§cError: Invalid argument for settings command.");
+                            player.sendMessage("§cUsage: /cyhunters settings dimension <overworld | nether>");
+                            player.playSound(player, Sound.ENTITY_ITEM_BREAK, 1f, 1f);
                             return true;
                         }
                     }
                     case "style" -> {
-                        if (!List.of("normal", "blitz").contains(args[2])) {
-                            player.sendMessage("§cError: Invalid arguments for command /cyhunters settings");
+                        if (args.length < 3 || !List.of("normal", "blitz").contains(args[2])) {
+                            player.sendMessage("§cError: Invalid argument for settings command.");
+                            player.sendMessage("§cUsage: /cyhunters settings style <normal | blitz>");
+                            player.playSound(player, Sound.ENTITY_ITEM_BREAK, 1f, 1f);
                             return true;
                         }
                     }
                     case "kit" -> {
-                        if (!List.of("empty", "basic", "bow", "shears", "op", "mace").contains(args[2])) {
-                            player.sendMessage("§cError: Invalid arguments for command /cyhunters settings");
+                        if (args.length < 3 || !List.of("empty", "basic", "bow", "shears", "op", "mace").contains(args[2])) {
+                            player.sendMessage("§cError: Invalid argument for settings command.");
+                            player.sendMessage("§cUsage: /cyhunters settings kit <empty | basic | bow | shears | op | mace>");
+                            player.playSound(player, Sound.ENTITY_ITEM_BREAK, 1f, 1f);
                             return true;
                         }
                     }
                     default -> {
-                        player.sendMessage("§cError: Invalid arguments for command /cyhunters settings");
+                        player.sendMessage("§cError: Invalid argument for settings command.");
+                        player.sendMessage("§cUsage: /cyhunters settings <dimension | style | kit> <value>");
+                        player.playSound(player, Sound.ENTITY_ITEM_BREAK, 1f, 1f);
                         return true;
                     }
                 }
 
                 onSettingChange(args[1], args[2]);
+                player.sendMessage("§aSettings successfully changed!");
+                player.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
             }
             default -> sendHelp(player);
         }
@@ -73,6 +86,7 @@ public class CyHuntersCommand implements CommandExecutor {
     private void onGameStart(Player player) {
         if (getMainGame().hasStarted()) {
             player.sendMessage("§cError: Game has already been started");
+            player.playSound(player, Sound.ENTITY_ITEM_BREAK, 1f, 1f);
             return;
         }
 
@@ -82,6 +96,7 @@ public class CyHuntersCommand implements CommandExecutor {
     private void onGameStop(Player player) {
         if (!getMainGame().hasStarted()) {
             player.sendMessage("§cError: Game has not yet started");
+            player.playSound(player, Sound.ENTITY_ITEM_BREAK, 1f, 1f);
             return;
         }
 

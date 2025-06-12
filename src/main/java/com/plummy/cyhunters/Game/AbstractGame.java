@@ -71,6 +71,11 @@ public abstract class AbstractGame implements IGame {
     }
 
     @Override
+    public boolean prepared() {
+        return List.of(GameState.HANDICAP, GameState.DEBUT, GameState.STARTED).contains(state);
+    }
+
+    @Override
     public boolean handicap() {
         return state == GameState.HANDICAP;
     }
@@ -237,7 +242,7 @@ public abstract class AbstractGame implements IGame {
             if (player instanceof Speedrunner) {
                 player.getPlayer().sendTitle("§b§lYou", "§3Are a §5Speedrunner", 0, 40, 0);
             } else {
-                player.getPlayer().sendTitle("§b§l" + getPlayerManager().getSpeedrunner().getPlayer().getName(), "§3Is a §5Speedrunner", 0, 40, 0);
+                player.getPlayer().sendTitle("§b§l" + getPlayerManager().getSpeedrunner().getName(), "§3Is a §5Speedrunner", 0, 40, 0);
             }
 
             player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.843f, 1f);

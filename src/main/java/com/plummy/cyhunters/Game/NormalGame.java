@@ -18,11 +18,6 @@ public class NormalGame extends AbstractGame {
     }
 
     @Override
-    public GameStyle getStyle() {
-        return GameStyle.NORMAL;
-    }
-
-    @Override
     public void start(Player startPlayer) {
         if (hasStarted()) {
             return;

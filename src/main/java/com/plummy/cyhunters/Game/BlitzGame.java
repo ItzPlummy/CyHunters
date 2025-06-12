@@ -19,11 +19,6 @@ public class BlitzGame extends AbstractGame {
     }
 
     @Override
-    public GameStyle getStyle() {
-        return GameStyle.BLITZ;
-    }
-
-    @Override
     public void start(Player startPlayer) {
         if (hasStarted()) {
             return;

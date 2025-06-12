@@ -10,8 +10,16 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.UUID;
 
 public class Speedrunner extends AbstractPlayer implements ISpeedrunner {
+    private final String name;
+
     public Speedrunner(UUID uuid, Player player) {
         super(uuid, player, PlayerState.PLAYING);
+        this.name = player.getName();
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override

@@ -53,7 +53,7 @@ public class GameBoard implements IGameBoard {
 
         board.clear();
 
-        if (getMainGame().hasStarted()) {
+        if (getMainGame().prepared()) {
             setInGameBoard();
         } else {
             setPreGameBoard();
@@ -67,7 +67,7 @@ public class GameBoard implements IGameBoard {
     }
 
     private void setPreGameBoard() {
-        board.add("§f---------------");
+        board.add("§f--------------------");
         board.add("§f");
         board.add("§dPlayers: §e" + Bukkit.getOnlinePlayers().size());
         board.add("§f§f");
@@ -75,7 +75,7 @@ public class GameBoard implements IGameBoard {
         board.add("§dStyle: §e" + GameStyle.getFromConfig().getName());
         board.add("§bKit: §e" + KitType.getFromConfig().getName());
         board.add("§f§f§f");
-        board.add("§f§f---------------");
+        board.add("§f§f--------------------");
     }
 
     private void setInGameBoard() {
@@ -88,8 +88,9 @@ public class GameBoard implements IGameBoard {
         board.add("§f--------------------");
         board.add("§f");
         board.add("§dPlayers: §e" + getMainGame().getPlayerManager().size());
+        board.add("§bSpeedrunner: §e" + getMainGame().getPlayerManager().getSpeedrunner().getName());
         board.add("§f§f");
-        board.add("§dTime in game: §b" + formatter.format(localTime));
+        board.add("§dTime in game: §e" + formatter.format(localTime));
         board.add("§f§f§f");
         board.add("§f§f--------------------");
     }

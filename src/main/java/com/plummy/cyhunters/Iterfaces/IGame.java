@@ -17,11 +17,11 @@ public interface IGame {
 
     ICameraManager getCameraManager();
 
-    GameStyle getStyle();
-
     boolean hasStarted();
 
     boolean preparing();
+
+    boolean prepared();
 
     boolean handicap();
 

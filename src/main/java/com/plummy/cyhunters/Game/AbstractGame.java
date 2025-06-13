@@ -8,11 +8,9 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
-import static com.plummy.cyhunters.CyHunters.config;
-import static com.plummy.cyhunters.CyHunters.getInstance;
+import static com.plummy.cyhunters.CyHunters.*;
+import static com.plummy.cyhunters.CyHunters.getMainGame;
 
 public abstract class AbstractGame implements IGame {
     private GameState state;
@@ -71,13 +69,18 @@ public abstract class AbstractGame implements IGame {
     }
 
     @Override
+    public boolean locating() {
+        return state == GameState.LOCATING;
+    }
+
+    @Override
     public boolean preparing() {
         return state == GameState.PREPARE;
     }
 
     @Override
     public boolean prepared() {
-        return hasStarted() && !preparing();
+        return hasStarted() && !locating() && !preparing();
     }
 
     @Override
@@ -124,26 +127,27 @@ public abstract class AbstractGame implements IGame {
 
         setup();
 
-        Location location;
-        CompletableFuture<Location> findLocationTask = CompletableFuture.supplyAsync(() -> setLocatingStage(startPlayer));
-        findLocationTask.join();
+        Bukkit.getScheduler().runTaskAsynchronously(getInstance(), () -> {
+            Location location = setLocatingStage(startPlayer);
 
-        try {
-            location = findLocationTask.get();
-        } catch (InterruptedException | ExecutionException exception) {
-            onLocationNotFound();
-            return;
-        }
+            if (location == null) {
+                onLocationNotFound();
+                return;
+            }
 
-        Long prepareTime = 200L;
-        Long handicapTime = config().getLong("parameters.game.seconds-to-debut") * getPlayerManager().getHunters().size();
-        Long debutTime = config().getLong("parameters.game.seconds-to-compass");
+            Bukkit.getScheduler().runTask(getInstance(), () -> {
+                long prepareTime = 10L;
+                Long handicapTime = config().getLong("parameters.game.seconds-to-debut") * getPlayerManager().getHunters().size();
+                Long debutTime = config().getLong("parameters.game.seconds-to-compass");
 
-        setPreparingStage(location);
+                setPreparingStage(location);
 
-        Bukkit.getScheduler().runTaskLater(getInstance(), () -> setHandicapStage(handicapTime), prepareTime);
-        Bukkit.getScheduler().runTaskLater(getInstance(), () -> setDebutStage(debutTime), prepareTime + handicapTime);
-        Bukkit.getScheduler().runTaskLater(getInstance(), this::setHuntingStage, prepareTime + handicapTime + debutTime);
+                Bukkit.getScheduler().runTaskLater(getInstance(), () -> setHandicapStage(handicapTime), prepareTime * 20);
+
+                getMainGame().getScheduler().addRunnable(() -> setDebutStage(debutTime), handicapTime, false);
+                getMainGame().getScheduler().addRunnable(this::setHuntingStage, handicapTime + debutTime, false);
+            });
+        });
     }
 
     public void stop(Player stopPlayer, GameEndingReason reason) {
@@ -224,7 +228,7 @@ public abstract class AbstractGame implements IGame {
     public void setStoppingStage(Player stopPlayer, GameEndingReason reason) {
         setState(GameState.NOT_STARTED);
 
-        displayStop(stopPlayer.getName(), reason);
+        displayStop(stopPlayer == null ? null : stopPlayer.getName(), reason);
 
         reset();
     }

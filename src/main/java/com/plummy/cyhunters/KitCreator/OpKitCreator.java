@@ -1,5 +1,6 @@
 package com.plummy.cyhunters.KitCreator;
 
+import com.plummy.cyhunters.Enums.KitType;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -9,6 +10,11 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public class OpKitCreator extends AbstractKitCreator {
+    @Override
+    public KitType getType() {
+        return KitType.OP;
+    }
+
     @Override
     public void createSpeedrunnerKit(Player player) {
         setItem(player, getEnchantedItem(

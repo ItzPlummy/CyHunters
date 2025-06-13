@@ -10,11 +10,8 @@ import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
-import static com.plummy.cyhunters.CyHunters.config;
-import static com.plummy.cyhunters.CyHunters.getInstance;
+import static com.plummy.cyhunters.CyHunters.*;
 
 public class BlitzGame extends AbstractGame {
     public BlitzGame(IPlayerManager playerManager, IScheduler scheduler, IGameBoard gameBoard, ILocationFinder locationFinder, ICameraManager cameraManager, IKitCreator kitCreator) {
@@ -34,27 +31,28 @@ public class BlitzGame extends AbstractGame {
 
         setup();
 
-        Location location;
-        CompletableFuture<Location> findLocationTask = CompletableFuture.supplyAsync(() -> setLocatingStage(startPlayer));
-        findLocationTask.join();
+        Bukkit.getScheduler().runTaskAsynchronously(getInstance(), () -> {
+            Location location = setLocatingStage(startPlayer);
 
-        try {
-            location = findLocationTask.get();
-        } catch (InterruptedException | ExecutionException exception) {
-            onLocationNotFound();
-            return;
-        }
+            if (location == null) {
+                onLocationNotFound();
+                return;
+            }
 
-        Long prepareTime = 200L;
-        Long handicapTime = config().getLong("parameters.game.seconds-to-debut-blitz") * getPlayerManager().getHunters().size();
-        Long debutTime = config().getLong("parameters.game.seconds-to-compass-blitz");
+            Bukkit.getScheduler().runTask(getInstance(), () -> {
+                Long prepareTime = 10L;
+                Long handicapTime = config().getLong("parameters.game.seconds-to-debut-blitz") * getPlayerManager().getHunters().size();
+                Long debutTime = config().getLong("parameters.game.seconds-to-compass-blitz");
 
-        setPreparingStage(location);
-        setWorldBorder(location);
+                setPreparingStage(location);
+                setWorldBorder(location);
 
-        Bukkit.getScheduler().runTaskLater(getInstance(), () -> setHandicapStage(handicapTime), prepareTime);
-        Bukkit.getScheduler().runTaskLater(getInstance(), () -> setDebutStage(debutTime), prepareTime + handicapTime);
-        Bukkit.getScheduler().runTaskLater(getInstance(), this::setHuntingStage, prepareTime + handicapTime + debutTime);
+                Bukkit.getScheduler().runTaskLater(getInstance(), () -> setHandicapStage(handicapTime), prepareTime * 20);
+
+                getMainGame().getScheduler().addRunnable(() -> setDebutStage(debutTime), handicapTime, false);
+                getMainGame().getScheduler().addRunnable(this::setHuntingStage, handicapTime + debutTime, false);
+            });
+        });
     }
 
     @Override

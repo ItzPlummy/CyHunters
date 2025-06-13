@@ -1,7 +1,6 @@
 package com.plummy.cyhunters.Iterfaces;
 
 import com.plummy.cyhunters.Enums.GameEndingReason;
-import com.plummy.cyhunters.Enums.GameState;
 import com.plummy.cyhunters.Enums.GameStyle;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -24,6 +23,8 @@ public interface IGame {
     GameStyle getStyle();
 
     boolean hasStarted();
+
+    boolean locating();
 
     boolean preparing();
 

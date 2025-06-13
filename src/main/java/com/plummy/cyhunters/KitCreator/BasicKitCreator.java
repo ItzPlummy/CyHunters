@@ -1,11 +1,17 @@
 package com.plummy.cyhunters.KitCreator;
 
+import com.plummy.cyhunters.Enums.KitType;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 public class BasicKitCreator extends AbstractKitCreator {
+    @Override
+    public KitType getType() {
+        return KitType.BASIC;
+    }
+
     @Override
     public void createSpeedrunnerKit(Player player) {
         setItem(player, new ItemStack(Material.IRON_PICKAXE, 1), 0);

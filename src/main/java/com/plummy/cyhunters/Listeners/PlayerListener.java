@@ -1,13 +1,16 @@
 package com.plummy.cyhunters.Listeners;
 
+import com.plummy.cyhunters.Enums.GameDimension;
 import com.plummy.cyhunters.Enums.GameEndingReason;
 import com.plummy.cyhunters.Game.NormalGame;
 import com.plummy.cyhunters.Iterfaces.IHunter;
 import com.plummy.cyhunters.Iterfaces.ISpeedrunner;
+import com.plummy.cyhunters.Player.Hunter;
 import com.plummy.cyhunters.Player.Speedrunner;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,6 +23,8 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.Objects;
 
 import static com.plummy.cyhunters.CyHunters.*;
 
@@ -60,7 +65,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        if (getMainGame().hasStarted()) {
+        if (getMainGame().prepared()) {
             return;
         }
 
@@ -72,12 +77,14 @@ public class PlayerListener implements Listener {
         if (!getMainGame().hasStarted()) {
             return;
         }
-
-        if (!(getMainGame().getPlayerManager().getPlayer(e.getEntity().getUniqueId()) instanceof Speedrunner)) {
+        if (getMainGame().getPlayerManager().getPlayer(e.getEntity().getUniqueId()) instanceof ISpeedrunner) {
+            Bukkit.getScheduler().runTaskLater(getInstance(), () -> getMainGame().stop(null, GameEndingReason.HUNTER_WINS), 20L);
             return;
         }
 
-        Bukkit.getScheduler().runTaskLater(getInstance(), () -> getMainGame().stop(null, GameEndingReason.HUNTER_WINS), 20L);
+        if (getMainGame().getPlayerManager().getPlayer(e.getEntity().getUniqueId()) instanceof Hunter) {
+            e.getDrops().clear();
+        }
     }
 
     @EventHandler
@@ -88,6 +95,14 @@ public class PlayerListener implements Listener {
 
         if (!(getMainGame().getPlayerManager().getPlayer(e.getPlayer().getUniqueId()) instanceof IHunter player)) {
             return;
+        }
+
+        if (Objects.requireNonNull(e.getRespawnLocation().getWorld()).getEnvironment() == World.Environment.NORMAL && getMainGame().getLocationFinder().getDimension() == GameDimension.NETHER) {
+            World world = Bukkit.getWorlds().stream().filter(w -> w.getEnvironment() == World.Environment.NETHER).findFirst().orElse(null);
+
+            if (world != null) {
+                e.setRespawnLocation(world.getSpawnLocation());
+            }
         }
 
         Bukkit.getScheduler().runTaskLater(getInstance(), player::setSpectating, 1L);

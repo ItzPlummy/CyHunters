@@ -4,6 +4,8 @@ import com.plummy.cyhunters.Enums.GameDimension;
 import com.plummy.cyhunters.Enums.GameEndingReason;
 import com.plummy.cyhunters.Enums.GameStyle;
 import com.plummy.cyhunters.Enums.KitType;
+import com.plummy.cyhunters.Iterfaces.IPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -30,7 +32,7 @@ public class CyHuntersCommand implements CommandExecutor {
         }
 
         switch (args[0]) {
-            case "start" -> onGameStart(player);
+            case "start" -> onGameStart(player, args.length > 1 ? args[1] : null);
             case "stop" -> onGameStop(player);
             case "settings" -> {
                 if (args.length < 2) {
@@ -74,8 +76,6 @@ public class CyHuntersCommand implements CommandExecutor {
                 }
 
                 onSettingChange(args[1], args[2]);
-                player.sendMessage("§aSettings successfully changed!");
-                player.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
             }
             default -> sendHelp(player);
         }
@@ -83,14 +83,16 @@ public class CyHuntersCommand implements CommandExecutor {
         return true;
     }
 
-    private void onGameStart(Player player) {
+    private void onGameStart(Player player, String speedrunnerName) {
         if (getMainGame().hasStarted()) {
             player.sendMessage("§cError: Game has already been started");
             player.playSound(player, Sound.ENTITY_ITEM_BREAK, 1f, 1f);
             return;
         }
 
-        getMainGame().start(player);
+        Player speedrunner = speedrunnerName != null ? Bukkit.getPlayer(speedrunnerName) : null;
+
+        getMainGame().start(player, speedrunner);
     }
 
     private void onGameStop(Player player) {
@@ -113,6 +115,11 @@ public class CyHuntersCommand implements CommandExecutor {
                 GameStyle.getFromConfig(),
                 KitType.getFromConfig()
         ));
+
+        for (Player player : Bukkit.getOnlinePlayers() ) {
+            player.sendMessage("§aSet " + setting + " to " + value + "!");
+            player.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
+        }
     }
 
     private void sendHelp(Player player) {

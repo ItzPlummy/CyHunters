@@ -1,8 +1,11 @@
 package com.plummy.cyhunters.Player;
 
 import com.plummy.cyhunters.Iterfaces.*;
+import com.plummy.cyhunters.LocationFinder.NetherLocationFinder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -66,9 +69,9 @@ public class PlayerManager implements IPlayerManager {
     }
 
     @Override
-    public void setPlayers(List<Player> players) {
+    public void setPlayers(List<Player> players, Player speedrunner) {
         resetPlayers();
-        speedrunnerUUID = players.get((int) (Math.random() * players.size())).getUniqueId();
+        speedrunnerUUID = speedrunner != null ? speedrunner.getUniqueId() : players.get((int) (Math.random() * players.size())).getUniqueId();
 
         for (Player player : players) {
             if (player.getUniqueId().equals(speedrunnerUUID)) {
@@ -138,13 +141,20 @@ public class PlayerManager implements IPlayerManager {
         int distance = config().getInt("parameters.spawn.hunter-spawn-distance");
         double angle = 0;
 
-        Objects.requireNonNull(location.getWorld()).setSpawnLocation(location);
-
         for (IHunter hunter : getHunters()) {
             double x = location.getX() + distance * Math.cos(angle);
             double z = location.getZ() + distance * Math.sin(angle);
 
-            hunter.ready(Objects.requireNonNull(location.getWorld()).getHighestBlockAt((int) x, (int) z).getLocation().add(0.5, 1, 0.5));
+            Block block;
+            if (Objects.requireNonNull(location.getWorld()).getEnvironment() == World.Environment.NETHER) {
+                block = NetherLocationFinder.getNetherHighestBlockAt(Objects.requireNonNull(location.getWorld()), (int) x, (int) z);
+            } else {
+                block = Objects.requireNonNull(location.getWorld()).getHighestBlockAt((int) x, (int) z);
+            }
+
+            assert block != null;
+            hunter.ready(block.getLocation().add(0.5, 1, 0.5));
+
             angle += 2 * Math.PI / (size() - 1);
         }
 

@@ -24,12 +24,12 @@ public class BlitzGame extends AbstractGame {
     }
 
     @Override
-    public void start(Player startPlayer) {
+    public void start(Player startPlayer, Player speedrunner) {
         if (hasStarted()) {
             return;
         }
 
-        setup();
+        setup(speedrunner);
 
         Bukkit.getScheduler().runTaskAsynchronously(getInstance(), () -> {
             Location location = setLocatingStage(startPlayer);
@@ -40,7 +40,7 @@ public class BlitzGame extends AbstractGame {
             }
 
             Bukkit.getScheduler().runTask(getInstance(), () -> {
-                Long prepareTime = 10L;
+                long prepareTime = 10L;
                 Long handicapTime = config().getLong("parameters.game.seconds-to-debut-blitz") * getPlayerManager().getHunters().size();
                 Long debutTime = config().getLong("parameters.game.seconds-to-compass-blitz");
 

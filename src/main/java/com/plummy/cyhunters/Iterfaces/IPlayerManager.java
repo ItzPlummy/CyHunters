@@ -25,7 +25,7 @@ public interface IPlayerManager {
 
     int size();
 
-    void setPlayers(List<Player> players);
+    void setPlayers(List<Player> players, Player speedrunner);
 
     void resetPlayers();
 

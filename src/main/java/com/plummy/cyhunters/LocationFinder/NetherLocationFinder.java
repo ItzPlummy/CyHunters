@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.plummy.cyhunters.CyHunters.config;
+import static com.plummy.cyhunters.CyHunters.logger;
 
 public class NetherLocationFinder extends AbstractLocationFinder {
     private static final List<Structure> searchStructures = List.of(
@@ -28,7 +29,8 @@ public class NetherLocationFinder extends AbstractLocationFinder {
 
     private static final List<Material> permittedMaterials = List.of(
             Material.LAVA,
-            Material.MAGMA_BLOCK
+            Material.MAGMA_BLOCK,
+            Material.FIRE
     );
 
     @Override
@@ -49,7 +51,7 @@ public class NetherLocationFinder extends AbstractLocationFinder {
         int minDistance = config().getInt("parameters.spawn.min-offset-distance");
         int maxDistance = config().getInt("parameters.spawn.max-offset-distance");
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 10; i++) {
             structureLocation = findStructureLocation(world, searchStructures);
 
             if (structureLocation == null) {
@@ -59,21 +61,19 @@ public class NetherLocationFinder extends AbstractLocationFinder {
             int x = structureLocation.getBlockX();
             int z = structureLocation.getBlockZ();
 
-            Biome biome = structureLocation.getBlock().getBiome();
-
-            if (biome != Biome.NETHER_WASTES) {
-                continue;
-            }
-
-            if (!verifyBiomeAvailability(structureLocation, maxDistance)) {
-                continue;
-            }
-
-            for (int j = 0; j < 10; j++) {
+            for (int j = 0; j < 20; j++) {
                 double distance = random.nextDouble(minDistance, maxDistance);
                 double angle = random.nextDouble(2 * Math.PI);
 
-                Block block = world.getHighestBlockAt((int) (x + distance * Math.cos(angle)), (int) (z + distance * Math.sin(angle)));
+                Block block = getNetherHighestBlockAt(world, (int) (x + distance * Math.cos(angle)), (int) (z + distance * Math.sin(angle)));
+
+                if (block == null) {
+                    continue;
+                }
+
+                if (!verifyBiomeAvailability(block.getLocation(), minDistance)) {
+                    continue;
+                }
 
                 if (!verifyLocationInRadius(block.getLocation())) {
                     continue;
@@ -98,11 +98,11 @@ public class NetherLocationFinder extends AbstractLocationFinder {
                 Block block = getNetherHighestBlockAt(location.getWorld(), location.getBlockX() + x, location.getBlockZ() + z);
 
                 if (block == null) {
-                    continue;
+                    return false;
                 }
 
                 if (permittedMaterials.contains(block.getType())) {
-                    continue;
+                    return false;
                 }
 
                 minY = Math.min(minY, block.getY());
@@ -125,7 +125,7 @@ public class NetherLocationFinder extends AbstractLocationFinder {
         return false;
     }
 
-    private static Block getNetherHighestBlockAt(World world, int x, int z) {
+    public static Block getNetherHighestBlockAt(World world, int x, int z) {
         boolean foundAir = false;
 
         for (int y = 127; y >= 0; y--) {
@@ -133,7 +133,7 @@ public class NetherLocationFinder extends AbstractLocationFinder {
 
             if (block.getType() == Material.AIR) {
                 foundAir = true;
-            } else if (foundAir) {
+            } else if (foundAir && block.getType() != Material.AIR) {
                 return block;
             }
         }

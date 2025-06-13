@@ -120,12 +120,12 @@ public abstract class AbstractGame implements IGame {
     }
 
     @Override
-    public void start(Player startPlayer) {
+    public void start(Player startPlayer, Player speedrunner) {
         if (hasStarted()) {
             return;
         }
 
-        setup();
+        setup(speedrunner);
 
         Bukkit.getScheduler().runTaskAsynchronously(getInstance(), () -> {
             Location location = setLocatingStage(startPlayer);
@@ -174,6 +174,7 @@ public abstract class AbstractGame implements IGame {
 
         World world = Objects.requireNonNull(location.getWorld());
 
+        world.setSpawnLocation(location);
         world.setTime(0);
         world.setClearWeatherDuration(world.getWeatherDuration());
         world.setGameRule(GameRule.KEEP_INVENTORY, false);
@@ -237,11 +238,11 @@ public abstract class AbstractGame implements IGame {
         this.state = state;
     }
 
-    protected void setup() {
+    protected void setup(Player speedrunner) {
         List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
         Collections.shuffle(players);
 
-        getPlayerManager().setPlayers(players);
+        getPlayerManager().setPlayers(players, speedrunner);
         getCameraManager().setupCameras();
     }
 

@@ -42,7 +42,7 @@ public interface IGame {
 
     void sync();
 
-    void start(Player startPlayer);
+    void start(Player startPlayer, Player speedrunner);
 
     void stop(Player stopPlayer, GameEndingReason reason);
 

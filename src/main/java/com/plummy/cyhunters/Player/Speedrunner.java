@@ -31,6 +31,6 @@ public class Speedrunner extends AbstractPlayer implements ISpeedrunner {
         reset();
 
         getPlayer().teleport(location);
-        getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 120, 0, true, false, false));
+        getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 200, 0, true, false, false));
     }
 }

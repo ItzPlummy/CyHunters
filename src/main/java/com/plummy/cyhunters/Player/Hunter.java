@@ -77,6 +77,8 @@ public class Hunter extends AbstractPlayer implements IHunter {
             spawnLocation = null;
         }
 
+        getMainGame().getKitCreator().createHunterKit(getPlayer());
+
         getCamera().detach();
 
         getPlayer().sendTitle("§a§lYou Respawned", "", 0, 40, 60);
@@ -96,7 +98,7 @@ public class Hunter extends AbstractPlayer implements IHunter {
         reset();
 
         getPlayer().teleport(location);
-        getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 120, 0, true, false, false));
+        getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 200, 0, true, false, false));
     }
 
     @Override

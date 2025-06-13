@@ -40,7 +40,7 @@ public class OverworldLocationFinder extends AbstractLocationFinder {
 
     @Override
     public Location findLocation() {
-        World world = Bukkit.getWorlds().stream().filter(w -> w.getEnvironment() == World.Environment.NETHER).findFirst().orElse(null);
+        World world = Bukkit.getWorlds().stream().filter(w -> w.getEnvironment() == World.Environment.NORMAL).findFirst().orElse(null);
 
         if (world == null) {
             return null;

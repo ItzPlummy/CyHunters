@@ -175,8 +175,8 @@ public abstract class AbstractGame implements IGame {
         World world = Objects.requireNonNull(location.getWorld());
 
         world.setSpawnLocation(location);
-        world.setTime(0);
-        world.setClearWeatherDuration(world.getWeatherDuration());
+        world.setTime(0L);
+        world.setClearWeatherDuration((int) (Math.random() * 15000) + 10000);
         world.setGameRule(GameRule.KEEP_INVENTORY, false);
         world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
         world.setGameRule(GameRule.DO_INSOMNIA, false);
@@ -291,7 +291,7 @@ public abstract class AbstractGame implements IGame {
                 player.getPlayer().sendTitle("§b§l" + getPlayerManager().getSpeedrunner().getName(), "§3Is a §5Speedrunner", 0, 40, 0);
             }
 
-            player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.944f, 1f);
+            player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 0.944f);
         }
     }
 
@@ -335,7 +335,7 @@ public abstract class AbstractGame implements IGame {
     protected void displayTitle(List<IPlayer> players, String title, String subtitle, int fadeOut, float pitch) {
         for (IPlayer player : players) {
             player.getPlayer().sendTitle(title, subtitle, 0, 40, fadeOut);
-            player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, pitch, 1f);
+            player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, pitch);
         }
     }
 

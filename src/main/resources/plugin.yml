@@ -4,3 +4,14 @@ main: com.plummy.cyhunters.CyHunters
 api-version: '1.21'
 
 author: Plummy
+
+permissions:
+  cyhunters-op:
+    description: Allows usage of all commands
+    default: op
+
+commands:
+  cyhunters:
+    description: CyHunters
+    aliases: ch
+    permission: cyhunters

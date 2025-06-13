@@ -1,0 +1,62 @@
+# CyHunters 1.0 Config File
+
+#                                                                    #
+# Game settings, you cat set them using /cyhunters settings command. #
+#                                                                    #
+settings:
+  # Game dimension - [ overworld, nether ]
+  dimension: overworld
+
+  # Game style - [ normal, blitz ]
+  style: normal
+
+  # Kit - [ empty, basic, bow, shears, op, mace ]
+  kit: empty
+
+
+#                                                                 #
+# Parameters that set clear game values. Change at your own risk. #
+#                                                                 #
+parameters:
+  # Parameters of spawn location search and player distribution.
+  spawn:
+    # In which radius from zero coordinates plugin searches a suitable location.
+    location-search-radius: 25000
+    # In which radius plugin searches for suitable structures from a selected random point.
+    structure-offset: 500
+    # Minimal spawn offset from a chosen structure.
+    min-offset-distance: 50
+    # Maximal spawn offset from a chosen structure.
+    max-offset-distance: 200
+    # Minimal height on which players can spawn.
+    min-height: 64
+    # Maximal height difference between blocks on spawn
+    max-height-difference: 6
+    # Distance on which hunters distribute around speedrunner on spawn.
+    hunter-spawn-distance: 3
+
+  # Gameplay parameters
+  game:
+    # Time in seconds per one hunter which speedrunner has to ready up.
+    seconds-to-debut: 15
+    # Time in seconds per one hunter which speedrunner has to ready up in blitz style.
+    seconds-to-debut-blitz: 10
+    # Time in seconds for hunters to receive a compass.
+    seconds-to-compass: 600
+    # Time in seconds for hunters to receive a compass in blitz style.
+    seconds-to-compass-blitz: 300
+    # Time in seconds in which a speedrunner will receive a victory in blitz style.
+    seconds-before-end: 900
+    # World border size in blitz style.
+    border-size: 500
+    # Time in seconds which takes a hunter to respawn.
+    respawn-delay: 30
+
+  camera:
+  # Camera position parameters
+    # Basic horizontal offset on a spectator camera.
+    default-yaw: 30
+    # Basic vertical offset on a spectator camera.
+    default-pitch: 5
+    # Basic distance offset on a spectator camera.
+    default-offset: 2

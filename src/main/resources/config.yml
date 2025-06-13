@@ -30,6 +30,8 @@ parameters:
     max-offset-distance: 200
     # Minimal height on which players can spawn.
     min-height: 64
+    # Maximal height difference between blocks on spawn
+    max-height-difference: 6
     # Distance on which hunters distribute around speedrunner on spawn.
     hunter-spawn-distance: 3
 

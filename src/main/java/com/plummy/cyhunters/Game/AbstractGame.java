@@ -163,7 +163,7 @@ public abstract class AbstractGame implements IGame {
 
         sendLocating(startPlayer.getName());
 
-        return getLocationFinder().findLocation(startPlayer.getWorld());
+        return getLocationFinder().findLocation();
     }
 
     public void setPreparingStage(Location location) {

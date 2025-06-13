@@ -1,20 +1,20 @@
 package com.plummy.cyhunters.LocationFinder;
 
 import com.plummy.cyhunters.Enums.GameDimension;
-import com.plummy.cyhunters.Iterfaces.ILocationFinder;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.generator.structure.Structure;
-import org.bukkit.util.StructureSearchResult;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import static com.plummy.cyhunters.CyHunters.config;
 
-public class OverworldLocationFinder implements ILocationFinder {
+public class OverworldLocationFinder extends AbstractLocationFinder {
     private static final List<Structure> searchStructures = List.of(
             Structure.VILLAGE_PLAINS,
             Structure.VILLAGE_DESERT,
@@ -38,15 +38,21 @@ public class OverworldLocationFinder implements ILocationFinder {
         return GameDimension.OVERWORLD;
     }
 
-    public Location findLocation(World world) {
+    @Override
+    public Location findLocation() {
+        World world = Bukkit.getWorlds().stream().filter(w -> w.getEnvironment() == World.Environment.NETHER).findFirst().orElse(null);
+
+        if (world == null) {
+            return null;
+        }
+
         Location structureLocation;
 
         int minDistance = config().getInt("parameters.spawn.min-offset-distance");
         int maxDistance = config().getInt("parameters.spawn.max-offset-distance");
-        int minHeight = config().getInt("parameters.spawn.min-height");
 
         for (int i = 0; i < 5; i++) {
-            structureLocation = findStructureLocation(world);
+            structureLocation = findStructureLocation(world, searchStructures);
 
             if (structureLocation == null) {
                 continue;
@@ -61,7 +67,7 @@ public class OverworldLocationFinder implements ILocationFinder {
 
                 Block block = world.getHighestBlockAt((int) (x + distance * Math.cos(angle)), (int) (z + distance * Math.sin(angle)));
 
-                if (permittedMaterials.contains(block.getType()) || block.getY() < minHeight) {
+                if (!verifyLocationInRadius(block.getLocation())) {
                     continue;
                 }
 
@@ -72,34 +78,27 @@ public class OverworldLocationFinder implements ILocationFinder {
         return null;
     }
 
-    private Location findStructureLocation(World world) {
-        int searchRadius = config().getInt("parameters.spawn.location-search-radius");
-        int structureOffset = config().getInt("parameters.spawn.structure-offset");
+    private static boolean verifyLocationInRadius(Location location) {
+        int distance = config().getInt("parameters.spawn.hunter-spawn-distance") + 1;
+        int minHeight = config().getInt("parameters.spawn.min-height");
+        int maxHeightDifference = config().getInt("parameters.spawn.max-height-difference");
 
-        Location randomLocation = new Location(world, random.nextInt(-searchRadius, searchRadius), 0, random.nextInt(-searchRadius, searchRadius));
+        int minY = location.getBlockY();
+        int maxY = location.getBlockY();
 
-        List<StructureSearchResult> searchResults = searchStructures.stream().map(structure -> world.locateNearestStructure(randomLocation, structure, structureOffset, false)).toList();
+        for (int x = -distance; x <= distance; x++) {
+            for (int z = -distance; z <= distance; z++) {
+                Block block = Objects.requireNonNull(location.getWorld()).getHighestBlockAt(location.getBlockX() + x, location.getBlockZ() + z);
 
-        double nearestDistance = Double.MAX_VALUE;
-        StructureSearchResult nearestResult = null;
+                if (permittedMaterials.contains(block.getType()) || block.getY() < minHeight) {
+                    continue;
+                }
 
-        for (StructureSearchResult searchResult : searchResults) {
-            if (searchResult == null) {
-                continue;
-            }
-
-            double distance = searchResult.getLocation().distance(randomLocation);
-
-            if (distance < nearestDistance) {
-                nearestDistance = distance;
-                nearestResult = searchResult;
+                minY = Math.min(minY, block.getY());
+                maxY = Math.max(maxY, block.getY());
             }
         }
 
-        if (nearestResult == null) {
-            return null;
-        }
-
-        return nearestResult.getLocation();
+        return maxY - minY <= maxHeightDifference;
     }
 }

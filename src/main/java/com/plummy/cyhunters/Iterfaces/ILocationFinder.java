@@ -6,5 +6,5 @@ import org.bukkit.World;
 
 public interface ILocationFinder {
     GameDimension getDimension();
-    Location findLocation(World world);
+    Location findLocation();
 }

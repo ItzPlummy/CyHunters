@@ -100,7 +100,7 @@ public class CyHuntersCommand implements CommandExecutor {
             return;
         }
 
-        getMainGame().stop(GameEndingReason.COMMAND, player);
+        getMainGame().stop(player, GameEndingReason.COMMAND);
     }
 
     private void onSettingChange(String setting, String value) {

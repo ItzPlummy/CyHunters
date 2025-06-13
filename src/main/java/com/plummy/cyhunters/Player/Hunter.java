@@ -82,7 +82,7 @@ public class Hunter extends AbstractPlayer implements IHunter {
         getPlayer().sendTitle("§a§lYou Respawned", "", 0, 40, 60);
         getPlayer().playSound(getPlayer(), Sound.ENTITY_PLAYER_LEVELUP, 1, 0.5f);
 
-        if (getMainGame().debuted()) {
+        if (getMainGame().hunt()) {
             getPlayer().getInventory().addItem(createCompass());
         }
     }

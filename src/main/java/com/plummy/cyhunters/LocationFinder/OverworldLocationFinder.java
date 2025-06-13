@@ -1,5 +1,6 @@
 package com.plummy.cyhunters.LocationFinder;
 
+import com.plummy.cyhunters.Enums.GameDimension;
 import com.plummy.cyhunters.Iterfaces.ILocationFinder;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -30,6 +31,11 @@ public class OverworldLocationFinder implements ILocationFinder {
 
     public OverworldLocationFinder() {
         random = new Random();
+    }
+
+    @Override
+    public GameDimension getDimension() {
+        return GameDimension.OVERWORLD;
     }
 
     public Location findLocation(World world) {

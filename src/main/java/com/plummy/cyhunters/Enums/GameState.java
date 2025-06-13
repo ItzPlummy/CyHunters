@@ -6,5 +6,5 @@ public enum GameState {
     PREPARE,
     HANDICAP,
     DEBUT,
-    STARTED
+    HUNTING
 }

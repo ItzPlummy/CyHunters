@@ -1,6 +1,7 @@
 package com.plummy.cyhunters.Listeners;
 
 import com.plummy.cyhunters.Enums.GameEndingReason;
+import com.plummy.cyhunters.Game.NormalGame;
 import com.plummy.cyhunters.Iterfaces.IHunter;
 import com.plummy.cyhunters.Iterfaces.ISpeedrunner;
 import com.plummy.cyhunters.Player.Speedrunner;
@@ -76,7 +77,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        Bukkit.getScheduler().runTaskLater(getInstance(), () -> getMainGame().stop(GameEndingReason.HUNTER_WINS, null), 20L);
+        Bukkit.getScheduler().runTaskLater(getInstance(), () -> getMainGame().stop(null, GameEndingReason.HUNTER_WINS), 20L);
     }
 
     @EventHandler
@@ -124,6 +125,10 @@ public class PlayerListener implements Listener {
             return;
         }
 
+        if (!(getMainGame() instanceof NormalGame)) {
+            return;
+        }
+
         Player player = e.getEntity().getKiller();
 
         if (player == null) {
@@ -134,6 +139,6 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        Bukkit.getScheduler().runTaskLater(getInstance(), () -> getMainGame().stop(GameEndingReason.SPEEDRUNNER_WINS, player), 20L);
+        Bukkit.getScheduler().runTaskLater(getInstance(), () -> getMainGame().stop(player, GameEndingReason.SPEEDRUNNER_WINS), 20L);
     }
 }

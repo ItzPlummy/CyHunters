@@ -4,14 +4,14 @@ import com.plummy.cyhunters.Enums.GameEndingReason;
 import com.plummy.cyhunters.Enums.GameState;
 import com.plummy.cyhunters.Iterfaces.*;
 import com.plummy.cyhunters.Player.Speedrunner;
-import org.bukkit.Bukkit;
-import org.bukkit.GameRule;
-import org.bukkit.Location;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
+import static com.plummy.cyhunters.CyHunters.config;
 import static com.plummy.cyhunters.CyHunters.getInstance;
 
 public abstract class AbstractGame implements IGame {
@@ -61,6 +61,11 @@ public abstract class AbstractGame implements IGame {
     }
 
     @Override
+    public IKitCreator getKitCreator() {
+        return kitCreator;
+    }
+
+    @Override
     public boolean hasStarted() {
         return state != GameState.NOT_STARTED;
     }
@@ -72,7 +77,7 @@ public abstract class AbstractGame implements IGame {
 
     @Override
     public boolean prepared() {
-        return List.of(GameState.HANDICAP, GameState.DEBUT, GameState.STARTED).contains(state);
+        return hasStarted() && !preparing();
     }
 
     @Override
@@ -81,8 +86,13 @@ public abstract class AbstractGame implements IGame {
     }
 
     @Override
-    public boolean debuted() {
-        return state == GameState.STARTED;
+    public boolean debut() {
+        return state == GameState.DEBUT;
+    }
+
+    @Override
+    public boolean hunt() {
+        return state == GameState.HUNTING;
     }
 
     @Override
@@ -107,88 +117,85 @@ public abstract class AbstractGame implements IGame {
     }
 
     @Override
-    public void stop(GameEndingReason reason, Player stopPlayer) {
+    public void start(Player startPlayer) {
+        if (hasStarted()) {
+            return;
+        }
+
+        setup();
+
+        Location location;
+        CompletableFuture<Location> findLocationTask = CompletableFuture.supplyAsync(() -> setLocatingStage(startPlayer));
+        findLocationTask.join();
+
+        try {
+            location = findLocationTask.get();
+        } catch (InterruptedException | ExecutionException exception) {
+            onLocationNotFound();
+            return;
+        }
+
+        Long prepareTime = 200L;
+        Long handicapTime = config().getLong("parameters.game.seconds-to-debut") * getPlayerManager().getHunters().size();
+        Long debutTime = config().getLong("parameters.game.seconds-to-compass");
+
+        setPreparingStage(location);
+
+        Bukkit.getScheduler().runTaskLater(getInstance(), () -> setHandicapStage(handicapTime), prepareTime);
+        Bukkit.getScheduler().runTaskLater(getInstance(), () -> setDebutStage(debutTime), prepareTime + handicapTime);
+        Bukkit.getScheduler().runTaskLater(getInstance(), this::setHuntingStage, prepareTime + handicapTime + debutTime);
+    }
+
+    public void stop(Player stopPlayer, GameEndingReason reason) {
         if (!hasStarted()) {
             return;
         }
 
-        setState(GameState.NOT_STARTED);
-
-        String title = "";
-        String subtitle = "";
-
-        switch (reason) {
-            case SPEEDRUNNER_WINS -> {
-                title = "§c§lGame Over";
-                subtitle = "§c" + stopPlayer.getName() + " won!";
-            }
-            case HUNTER_WINS -> {
-                title = "§c§lGame Over";
-                subtitle = "§cHunters won!";
-            }
-            case COMMAND -> {
-                title = "§c§lGame Stopped";
-                subtitle = "§cBy " + stopPlayer.getName();
-            }
-        }
-
-        for (IPlayer player : getPlayerManager().getOnlinePlayers()) {
-            player.getPlayer().sendTitle(title, subtitle, 40, 40, 60);
-            player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_ENDER_DRAGON_DEATH, 1f, 1f);
-        }
-
-        getPlayerManager().resetPlayers();
-        getScheduler().stop();
-        getCameraManager().resetCameras();
-        sync();
+        setStoppingStage(stopPlayer, reason);
     }
 
-    protected GameState getState() {
-        return state;
-    }
-
-    protected void setState(GameState state) {
-        this.state = state;
-    }
-
-    protected void startLocating(String playerName) {
+    public Location setLocatingStage(Player startPlayer) {
         setState(GameState.LOCATING);
-        send("§a§lCyHunters has been started by " + playerName + "!");
-        send("§aSearching for a suitable location...");
+
+        sendLocating(startPlayer.getName());
+
+        return getLocationFinder().findLocation(startPlayer.getWorld());
     }
 
-    protected void startPreparing(Location location) {
+    public void setPreparingStage(Location location) {
         setState(GameState.PREPARE);
+
         getPlayerManager().ready(location);
         sync();
 
-        Objects.requireNonNull(location.getWorld()).setTime(0);
-        Objects.requireNonNull(location.getWorld()).setGameRule(GameRule.KEEP_INVENTORY, false);
-        Objects.requireNonNull(location.getWorld()).setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
-        Objects.requireNonNull(location.getWorld()).setGameRule(GameRule.DO_INSOMNIA, false);
+        World world = Objects.requireNonNull(location.getWorld());
+
+        world.setTime(0);
+        world.setClearWeatherDuration(world.getWeatherDuration());
+        world.setGameRule(GameRule.KEEP_INVENTORY, false);
+        world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+        world.setGameRule(GameRule.DO_INSOMNIA, false);
+
+        setWorldBorder(world);
+
+        Bukkit.getScheduler().runTaskLater(getInstance(), this::displayIntro, 0L);
+        Bukkit.getScheduler().runTaskLater(getInstance(), this::displayDimension, 40L);
+        Bukkit.getScheduler().runTaskLater(getInstance(), this::displayStyle, 80L);
+        Bukkit.getScheduler().runTaskLater(getInstance(), this::displayKit, 120L);
+        Bukkit.getScheduler().runTaskLater(getInstance(), this::displaySpeedrunner, 160L);
     }
 
-    protected void startHandicap(Long secondsToDebut, Long secondsToCompass) {
+    public void setHandicapStage(Long handicapTime) {
         setState(GameState.HANDICAP);
-        getScheduler().start();
 
+        getScheduler().start();
         kitCreator.createSpeedrunnerKit(getPlayerManager().getSpeedrunner().getPlayer());
 
-        for (IPlayer player : getPlayerManager().getOnlinePlayers()) {
-            player.getPlayer().sendTitle("§b§lLets §d§lGo!", "", 0, 40, 60);
-            player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
-            player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_DRAGON_FIREBALL_EXPLODE, 1f, 1f);
-        }
-
-        send("§e§lHandicap stage has been started!");
-        send("§eSpeedrunner has " + secondsToDebut + " seconds to ready up, before");
-        send("§ehunters will start to chase him!");
-
-        getScheduler().addRunnable(this::startDebut, secondsToDebut, false);
-        getScheduler().addRunnable(this::completeStart, secondsToCompass, false);
+        sendHandicap(handicapTime);
+        displayStart();
     }
 
-    protected void startDebut() {
+    public void setDebutStage(Long debutTime) {
         setState(GameState.DEBUT);
 
         for (IHunter hunter : getPlayerManager().getHunters()) {
@@ -199,11 +206,11 @@ public abstract class AbstractGame implements IGame {
             player.getPlayer().playSound(player.getPlayer(), Sound.BLOCK_END_PORTAL_SPAWN, 1f, 0.75f);
         }
 
-        send("§c§lHunters are free!");
+        sendDebut();
     }
 
-    protected void completeStart() {
-        setState(GameState.STARTED);
+    public void setHuntingStage() {
+        setState(GameState.HUNTING);
 
         for (IPlayer player : getPlayerManager().getOnlinePlayers()) {
             player.getPlayer().playSound(player.getPlayer(), Sound.BLOCK_END_PORTAL_SPAWN, 1f, 0.75f);
@@ -211,10 +218,22 @@ public abstract class AbstractGame implements IGame {
 
         getPlayerManager().getHunters().forEach(IHunter::giveCompass);
 
-        send("§cHunters now got compasses to track down the speedrunner!");
+        sendHunting();
     }
 
-    protected void setupPlayersAndCameras() {
+    public void setStoppingStage(Player stopPlayer, GameEndingReason reason) {
+        setState(GameState.NOT_STARTED);
+
+        displayStop(stopPlayer.getName(), reason);
+
+        reset();
+    }
+
+    protected void setState(GameState state) {
+        this.state = state;
+    }
+
+    protected void setup() {
         List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
         Collections.shuffle(players);
 
@@ -222,22 +241,44 @@ public abstract class AbstractGame implements IGame {
         getCameraManager().setupCameras();
     }
 
-    protected void processNullLocation() {
-        send("§cUnable to find a suitable location to start the game. Please try again.");
-
+    protected void reset() {
         getPlayerManager().resetPlayers();
+        getScheduler().stop();
         getCameraManager().resetCameras();
         sync();
     }
 
-    protected void displayIntroMessage() {
-        for (IPlayer player : getPlayerManager().getOnlinePlayers()) {
-            player.getPlayer().sendTitle("§b§lCy§d§lHunters", "§3Let the fun §5Begin§3!", 0, 40, 0);
-            player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.843f, 1f);
-        }
+    protected void onLocationNotFound() {
+        setState(GameState.NOT_STARTED);
+
+        sendLocationNotFound();
+        reset();
     }
 
-    protected void displaySpeedrunnerMessage() {
+    protected void setWorldBorder(World world) {
+        WorldBorder border = world.getWorldBorder();
+
+        border.setCenter(0, 0);
+        border.setSize(29999984L);
+    }
+
+    protected void displayIntro() {
+        displayTitle(getPlayerManager().getOnlinePlayers(), "§b§lCy§d§lHunters", "§3Let the fun §5Begin§3!", 0.5F);
+    }
+
+    protected void displayDimension() {
+        displayTitle(getPlayerManager().getOnlinePlayers(), "§c" + getLocationFinder().getDimension().getName(), "§4Dimension", 0.63F);
+    }
+
+    protected void displayStyle() {
+        displayTitle(getPlayerManager().getOnlinePlayers(), "§e" + getStyle().getName(), "§6Game Style", 0.749F);
+    }
+
+    protected void displayKit() {
+        displayTitle(getPlayerManager().getOnlinePlayers(), "§a" + getKitCreator().getType().getName(), "§2Selected Kit", 0.841F);
+    }
+
+    protected void displaySpeedrunner() {
         for (IPlayer player : getPlayerManager().getOnlinePlayers()) {
             if (player instanceof Speedrunner) {
                 player.getPlayer().sendTitle("§b§lYou", "§3Are a §5Speedrunner", 0, 40, 0);
@@ -245,7 +286,51 @@ public abstract class AbstractGame implements IGame {
                 player.getPlayer().sendTitle("§b§l" + getPlayerManager().getSpeedrunner().getName(), "§3Is a §5Speedrunner", 0, 40, 0);
             }
 
-            player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.843f, 1f);
+            player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.944f, 1f);
+        }
+    }
+
+    protected void displayStart() {
+        displayTitle(getPlayerManager().getOnlinePlayers(), "§b§lLets §d§lGo!", "", 60, 1F);
+
+        for (IPlayer player : getPlayerManager().getOnlinePlayers()) {
+            player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_DRAGON_FIREBALL_EXPLODE, 1f, 1f);
+        }
+    }
+
+    protected void displayStop(String playerName, GameEndingReason reason) {
+        String title = "";
+        String subtitle = "";
+
+        switch (reason) {
+            case SPEEDRUNNER_WINS -> {
+                title = "§c§lGame Over";
+                subtitle = "§c" + playerName + " won!";
+            }
+            case HUNTER_WINS -> {
+                title = "§c§lGame Over";
+                subtitle = "§cHunters won!";
+            }
+            case COMMAND -> {
+                title = "§c§lGame Stopped";
+                subtitle = "§cBy " + playerName;
+            }
+        }
+
+        for (IPlayer player : getPlayerManager().getOnlinePlayers()) {
+            player.getPlayer().sendTitle(title, subtitle, 40, 40, 60);
+            player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_ENDER_DRAGON_DEATH, 1f, 1f);
+        }
+    }
+
+    protected void displayTitle(List<IPlayer> players, String title, String subtitle, float pitch) {
+        displayTitle(players, title, subtitle, 0, pitch);
+    }
+
+    protected void displayTitle(List<IPlayer> players, String title, String subtitle, int fadeOut, float pitch) {
+        for (IPlayer player : players) {
+            player.getPlayer().sendTitle(title, subtitle, 0, 40, fadeOut);
+            player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, pitch, 1f);
         }
     }
 
@@ -253,5 +338,28 @@ public abstract class AbstractGame implements IGame {
         for (IPlayer player : playerManager.getOnlinePlayers()) {
             player.getPlayer().sendMessage(message);
         }
+    }
+
+    protected void sendLocating(String playerName) {
+        send("§a§lCyHunters has been started by " + playerName + "!");
+        send("§aSearching for a suitable location...");
+    }
+
+    protected void sendHandicap(Long handicapTime) {
+        send("§e§lHandicap stage has been started!");
+        send("§eSpeedrunner has " + handicapTime + " seconds to ready up, before");
+        send("§ehunters will start to chase him!");
+    }
+
+    protected void sendDebut() {
+        send("§c§lHunters are free!");
+    }
+
+    protected void sendHunting() {
+        send("§cHunters now got compasses to track down the speedrunner!");
+    }
+
+    protected void sendLocationNotFound() {
+        send("§cUnable to find a suitable location to start the game. Please try again.");
     }
 }

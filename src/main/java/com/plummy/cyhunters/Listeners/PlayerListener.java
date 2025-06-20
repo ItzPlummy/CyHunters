@@ -2,11 +2,11 @@ package com.plummy.cyhunters.Listeners;
 
 import com.plummy.cyhunters.Enums.GameDimension;
 import com.plummy.cyhunters.Enums.GameEndingReason;
+import com.plummy.cyhunters.Enums.KitType;
 import com.plummy.cyhunters.Game.NormalGame;
 import com.plummy.cyhunters.Iterfaces.IHunter;
 import com.plummy.cyhunters.Iterfaces.ISpeedrunner;
 import com.plummy.cyhunters.Player.Hunter;
-import com.plummy.cyhunters.Player.Speedrunner;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -82,7 +82,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        if (getMainGame().getPlayerManager().getPlayer(e.getEntity().getUniqueId()) instanceof Hunter) {
+        if (getMainGame().getPlayerManager().getPlayer(e.getEntity().getUniqueId()) instanceof Hunter && getMainGame().getKitCreator().getType() != KitType.EMPTY) {
             e.getDrops().clear();
         }
     }

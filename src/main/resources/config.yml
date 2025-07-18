@@ -1,7 +1,7 @@
 # CyHunters 1.0 Config File
 
 #                                                                    #
-# Game settings, you cat set them using /cyhunters settings command. #
+# Game settings, you can set them using /cyhunters settings command. #
 #                                                                    #
 settings:
   # Game dimension - [ overworld, nether ]

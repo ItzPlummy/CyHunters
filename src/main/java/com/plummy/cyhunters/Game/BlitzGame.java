@@ -8,6 +8,8 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.Objects;
 
@@ -50,7 +52,7 @@ public class BlitzGame extends AbstractGame {
                 Bukkit.getScheduler().runTaskLater(getInstance(), () -> setHandicapStage(handicapTime), prepareTime * 20);
 
                 getMainGame().getScheduler().addRunnable(() -> setDebutStage(debutTime), handicapTime, false);
-                getMainGame().getScheduler().addRunnable(this::setHuntingStage, handicapTime + debutTime, false);
+                getMainGame().getScheduler().addRunnable(this::setHuntingStage, debutTime, false);
             });
         });
     }
@@ -80,6 +82,8 @@ public class BlitzGame extends AbstractGame {
         for (IPlayer player : getPlayerManager().getOnlinePlayers()) {
             player.getPlayer().playSound(player.getPlayer(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP , 1f, 1f);
         }
+
+        getMainGame().getPlayerManager().getSpeedrunner().getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 3600, 0));
     }
     protected void sendOneMinuteWarning() {
         send("§a1 minute left until the Speedrunner wins!");
